@@ -119,7 +119,7 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
     Array2D.mapi (fun x y _ -> byte (processPixel x y)) img
 
 /// Rotating the picture 90 degrees. The "side" variable takes two values of the String type: right and left.
-let rotate90Degrees (image: byte[,]) (side: string) =
+let rotate90Degrees (side: string) (image: byte[,]) =
     let height = image.GetLength 0
     let width = image.GetLength 1
     let res = Array2D.zeroCreate width height

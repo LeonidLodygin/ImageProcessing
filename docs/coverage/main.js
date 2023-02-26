@@ -225,6 +225,7 @@ var assemblies = [
     "name": "ImageProcessing",
     "classes": [
       { "name": "CpuImageProcessing", "rp": "ImageProcessing_CpuImageProcessing.html", "cl": 0, "ucl": 54, "cal": 54, "tl": 138, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 44, "lch": [], "bch": [], "hc": [] },
+      { "name": "ImageArrayProcessing", "rp": "ImageProcessing_ImageArrayProcessing.html", "cl": 0, "ucl": 13, "cal": 13, "tl": 38, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 2, "lch": [], "bch": [], "hc": [] },
       { "name": "ImageProcessing.Main", "rp": "ImageProcessing_Main.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 6, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
@@ -239,7 +240,7 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::rotate90Degrees(System.Byte[0...,0...],System.String)", "methodShortName": "rotate90Degrees(...)", "fileIndex": 0, "line": 123,
+    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::rotate90Degrees(System.String,System.Byte[0...,0...])", "methodShortName": "rotate90Degrees(...)", "fileIndex": 0, "line": 123,
     "metrics": [
       { "value": 11, "exceeded": false },
       { "value": 1024, "exceeded": true },
@@ -265,6 +266,13 @@ var riskHotspots = [
       { "value": 5, "exceeded": false },
       { "value": 16, "exceeded": false },
       { "value": 30, "exceeded": true },
+    ]},
+  {
+    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Boolean ImageArrayProcessing/filtered@22::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 22,
+    "metrics": [
+      { "value": 4, "exceeded": false },
+      { "value": 0, "exceeded": false },
+      { "value": 20, "exceeded": true },
     ]},
 ];
 

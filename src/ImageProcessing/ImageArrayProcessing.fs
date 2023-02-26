@@ -24,7 +24,7 @@ let listAllFiles dir =
     printfn $"%A{filtered}"
     List.ofArray filtered
 
-let ArrayOfImageProcessing inputDir outputDir conversion =
+let ArrayOfImagesProcessing inputDir outputDir conversion =
     let list = listAllFiles inputDir
 
     let rec helper lst =

@@ -224,9 +224,10 @@ var assemblies = [
   {
     "name": "ImageProcessing",
     "classes": [
-      { "name": "CpuImageProcessing", "rp": "ImageProcessing_CpuImageProcessing.html", "cl": 0, "ucl": 54, "cal": 54, "tl": 138, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 44, "lch": [], "bch": [], "hc": [] },
-      { "name": "ImageArrayProcessing", "rp": "ImageProcessing_ImageArrayProcessing.html", "cl": 0, "ucl": 13, "cal": 13, "tl": 38, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 2, "lch": [], "bch": [], "hc": [] },
-      { "name": "ImageProcessing.Main", "rp": "ImageProcessing_Main.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 6, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "Arguments", "rp": "ImageProcessing_Arguments.html", "cl": 6, "ucl": 6, "cal": 12, "tl": 35, "ct": "LineCoverage", "mc": "-", "cb": 5, "tb": 7, "lch": [], "bch": [], "hc": [] },
+      { "name": "CpuImageProcessing", "rp": "ImageProcessing_CpuImageProcessing.html", "cl": 32, "ucl": 12, "cal": 44, "tl": 112, "ct": "LineCoverage", "mc": "-", "cb": 41, "tb": 44, "lch": [], "bch": [], "hc": [] },
+      { "name": "ImageArrayProcessing", "rp": "ImageProcessing_ImageArrayProcessing.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 32, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 2, "lch": [], "bch": [], "hc": [] },
+      { "name": "ImageProcessing.Main", "rp": "ImageProcessing_Main.html", "cl": 0, "ucl": 24, "cal": 24, "tl": 43, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 8, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
 
@@ -240,35 +241,21 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::rotate90Degrees(System.String,System.Byte[0...,0...])", "methodShortName": "rotate90Degrees(...)", "fileIndex": 0, "line": 123,
+    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::rotate90Degrees(System.String,System.Byte[0...,0...])", "methodShortName": "rotate90Degrees(...)", "fileIndex": 0, "line": 97,
     "metrics": [
       { "value": 11, "exceeded": false },
       { "value": 1024, "exceeded": true },
-      { "value": 132, "exceeded": true },
+      { "value": 11.02, "exceeded": false },
     ]},
   {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Single CpuImageProcessing/processPixel@109::Invoke(System.Int32,System.Int32)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 109,
-    "metrics": [
-      { "value": 9, "exceeded": false },
-      { "value": 64, "exceeded": false },
-      { "value": 90, "exceeded": true },
-    ]},
-  {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Int32 CpuImageProcessing/Pipe #1 input at line 45@46::GenerateNext(System.Collections.Generic.IEnumerable`1<a>&)", "methodShortName": "GenerateNext(...)", "fileIndex": 0, "line": 46,
-    "metrics": [
-      { "value": 8, "exceeded": false },
-      { "value": 4, "exceeded": false },
-      { "value": 72, "exceeded": true },
-    ]},
-  {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::loadAs2DArray(System.String)", "methodShortName": "loadAs2DArray(...)", "fileIndex": 0, "line": 21,
+    "assembly": "ImageProcessing", "class": "ImageProcessing.Main", "reportPath": "ImageProcessing_Main.html", "methodName": "System.Int32 ImageProcessing.Main::main(System.String[])", "methodShortName": "main(...)", "fileIndex": 0, "line": 12,
     "metrics": [
       { "value": 5, "exceeded": false },
       { "value": 16, "exceeded": false },
       { "value": 30, "exceeded": true },
     ]},
   {
-    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Boolean ImageArrayProcessing/filtered@22::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 22,
+    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Boolean ImageArrayProcessing/filtered@21::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 21,
     "metrics": [
       { "value": 4, "exceeded": false },
       { "value": 0, "exceeded": false },

@@ -1,21 +1,7 @@
 module CpuImageProcessing
 
-open System
 open SixLabors.ImageSharp
 open SixLabors.ImageSharp.PixelFormats
-
-[<Struct>]
-type MyImage =
-    val Data: array<byte>
-    val Width: int
-    val Height: int
-    val Name: string
-
-    new(data, width, height, name) =
-        { Data = data
-          Width = width
-          Height = height
-          Name = name }
 
 let loadAs2DArray (filePath: string) =
     let img = Image.Load<L8> filePath
@@ -25,21 +11,12 @@ let loadAs2DArray (filePath: string) =
         for j in 0 .. img.Height - 1 do
             res[j, i] <- img.Item(i, j).PackedValue
 
-    printfn $"H=%A{img.Height} W=%A{img.Width}"
+    printfn $"%A{System.IO.Path.GetFileName filePath} successfully loaded."
     res
 
-let loadAsMyImage (filePath: string) =
-    let img = Image.Load<L8> filePath
-
-    let buffer = Array.zeroCreate<byte> (img.Width * img.Height)
-
-    img.CopyPixelDataTo(Span<byte> buffer)
-    MyImage(buffer, img.Width, img.Height, System.IO.Path.GetFileName filePath)
-
 let save2DByteArrayAsImage (imageData: byte[,]) filePath =
-    let height = imageData.GetLength 0
-    let width = imageData.GetLength 1
-    printfn $"H=%A{height} W=%A{width}"
+    let height = Array2D.length1 imageData
+    let width = Array2D.length2 imageData
 
     let flat2dArray array2D =
         seq {
@@ -51,10 +28,7 @@ let save2DByteArrayAsImage (imageData: byte[,]) filePath =
 
     let img = Image.LoadPixelData<L8>(flat2dArray imageData, width, height)
     img.Save filePath
-
-let saveMyImage (image: MyImage) filePath =
-    let img = Image.LoadPixelData<L8>(image.Data, image.Width, image.Height)
-    img.Save filePath
+    printfn $"%A{System.IO.Path.GetFileName filePath} successfully saved."
 
 let gaussianBlurKernel =
     [| [| 1; 4; 6; 4; 1 |]
@@ -72,7 +46,7 @@ let edgesKernel =
        [| 0; 0; 0; 0; 0 |] |]
     |> Array.map (Array.map float32)
 
-let gaussianBlur7x7 =
+let gaussianBlur7x7Kernel =
     [| [| 0; 0; 1; 2; 1; 0; 0 |]
        [| 0; 3; 13; 22; 13; 3; 0 |]
        [| 1; 13; 59; 97; 59; 13; 1 |]
@@ -82,7 +56,7 @@ let gaussianBlur7x7 =
        [| 0; 0; 1; 2; 1; 0; 0 |] |]
     |> Array.map (Array.map (fun x -> (float32 x) / 1003.0f))
 
-let sharpen =
+let sharpenKernel =
     [| [| -1; -1; -1; -1; -1 |]
        [| -1; 2; 2; 2; -1 |]
        [| -1; 2; 8; 2; -1 |]
@@ -90,7 +64,7 @@ let sharpen =
        [| -1; -1; -1; -1; -1 |] |]
     |> Array.map (Array.map (fun x -> (float32 x) / 8.0f))
 
-let emboss =
+let embossKernel =
     [| [| -1f; -1f; -1f; -1f; 0f |]
        [| -1f; -1f; -1f; 0f; 1f |]
        [| -1f; -1f; 0f; 1f; 1f |]
@@ -98,8 +72,8 @@ let emboss =
        [| 0f; 1f; 1f; 1f; 1f |] |]
 
 let applyFilter (filter: float32[][]) (img: byte[,]) =
-    let imgHeight = img.GetLength 0
-    let imgWidth = img.GetLength 1
+    let imgHeight = Array2D.length1 img
+    let imgWidth = Array2D.length2 img
 
     let filterD = (Array.length filter) / 2
 
@@ -120,8 +94,8 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
 
 /// Rotating the picture 90 degrees. The "side" variable takes two values of the String type: right and left.
 let rotate90Degrees (side: string) (image: byte[,]) =
-    let height = image.GetLength 0
-    let width = image.GetLength 1
+    let height = Array2D.length1 image
+    let width = Array2D.length2 image
     let res = Array2D.zeroCreate width height
 
     if side = "right" then

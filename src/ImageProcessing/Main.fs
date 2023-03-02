@@ -10,34 +10,20 @@ module Main =
     [<EntryPoint>]
     let main (argv: string array) =
         let parser = ArgumentParser.Create<CliArguments>().ParseCommandLine argv
+        let inputPath = parser.GetResult(InputPath)
+        let outputPath = parser.GetResult(OutputPath)
 
-
-        match parser with
-        | result when result.Contains(Filter) ->
-            let tripleResult = parser.GetResult(Filter)
-            let inputPath = first tripleResult
-            let outputPath = second tripleResult
-            let kernel = third tripleResult |> kernelParser
+        if parser.Contains(Modifications) then
+            let listOfFunc = parser.GetResult(Modifications) |> List.map ModificationParser
+            let composition = List.fold (fun s v -> s >> v) listOfFunc.Head listOfFunc.Tail
 
             match System.IO.Path.GetExtension inputPath with
-            | "" -> ArrayOfImagesProcessing inputPath outputPath (applyFilter kernel)
+            | "" -> ArrayOfImagesProcessing inputPath outputPath composition
             | _ ->
                 let arr = loadAs2DArray inputPath
-                let filtered = applyFilter kernel arr
+                let filtered = composition arr
                 save2DByteArrayAsImage filtered outputPath
-
-        | result when result.Contains(Rotate) ->
-            let tripleResult = parser.GetResult(Rotate)
-            let inputPath = first tripleResult
-            let outputPath = second tripleResult
-            let side = third tripleResult
-
-            match System.IO.Path.GetExtension inputPath with
-            | "" -> ArrayOfImagesProcessing inputPath outputPath (rotate90Degrees side)
-            | _ ->
-                let arr = loadAs2DArray inputPath
-                let filtered = rotate90Degrees side arr
-                save2DByteArrayAsImage filtered outputPath
-        | _ -> printfn $"Unexpected command"
+        else
+            printfn $"Zero modifications expected"
 
         0

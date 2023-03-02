@@ -56,10 +56,10 @@ module PropertyTests =
                       turnedRight
                       "Image after 2 turns in one way should be the same with image turned 2 times in opposite way"
 
-              testProperty "Filtering image"
-              <| fun (length: int) (filter: Kernel) ->
+              testProperty "Modification of image"
+              <| fun (length: int) (modification: Modifications) ->
                   let arr =
                       Array2D.init ((abs length) + 2) ((abs length) + 2) (fun _ _ -> Random().Next(1, 10) |> byte)
 
-                  let filtered = applyFilter (kernelParser filter) arr
-                  Expect.notEqual arr filtered "The image after filtering should not be the same with the original" ]
+                  let newImage = ModificationParser modification arr
+                  Expect.notEqual arr newImage "The image after modification should not be the same with the original" ]

@@ -22,7 +22,7 @@ module SimpleTests =
                   let image =
                       array2D [ [| 1uy; 2uy; 3uy |]; [| 1uy; 2uy; 3uy |]; [| 1uy; 2uy; 3uy |] ]
 
-                  let turnedImage = image |> rotate90Degrees "right"
+                  let turnedImage = image |> rotate90Degrees true
 
                   let expected =
                       array2D [ [| 1uy; 1uy; 1uy |]; [| 2uy; 2uy; 2uy |]; [| 3uy; 3uy; 3uy |] ]
@@ -34,10 +34,10 @@ module SimpleTests =
 
                   let turnedImage =
                       image
-                      |> rotate90Degrees "right"
-                      |> rotate90Degrees "right"
-                      |> rotate90Degrees "right"
-                      |> rotate90Degrees "right"
+                      |> rotate90Degrees true
+                      |> rotate90Degrees true
+                      |> rotate90Degrees true
+                      |> rotate90Degrees true
 
                   Expect.equal image turnedImage "Image after 4 turns in one way should be the same with source image" ]
 
@@ -48,8 +48,8 @@ module PropertyTests =
             "Some property tests"
             [ testProperty "The image similarity with double left and right rotation"
               <| fun (arr: byte[,]) ->
-                  let turnedLeft = arr |> rotate90Degrees "left" |> rotate90Degrees "left"
-                  let turnedRight = arr |> rotate90Degrees "right" |> rotate90Degrees "right"
+                  let turnedLeft = arr |> rotate90Degrees false |> rotate90Degrees false
+                  let turnedRight = arr |> rotate90Degrees true |> rotate90Degrees true
 
                   Expect.equal
                       turnedLeft

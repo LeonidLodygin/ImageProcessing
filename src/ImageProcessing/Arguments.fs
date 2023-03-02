@@ -24,7 +24,7 @@ let kernelParser kernel =
 
 type CliArguments =
     | [<First; AltCommandLine("-ft")>] Filter of inputPath: string * outputPath: string * filter: Kernel
-    | [<First; AltCommandLine("-rt")>] Rotate of inputPath: string * outputPath: string * side: string
+    | [<First; AltCommandLine("-rt")>] Rotate of inputPath: string * outputPath: string * side: bool
 
     interface IArgParserTemplate with
         member s.Usage =

@@ -16,9 +16,8 @@ let Extensions =
 
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
-    // Filter the obtained files by extension
     let filtered =
-        Array.filter (fun (x: string) -> Array.contains (x.Substring(x.LastIndexOf('.'))) Extensions) files
+        Array.filter (fun (x: string) -> Array.contains (System.IO.Path.GetExtension x) Extensions) files
 
     List.ofArray filtered
 

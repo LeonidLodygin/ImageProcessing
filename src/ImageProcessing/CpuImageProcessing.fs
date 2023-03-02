@@ -92,21 +92,19 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
 
     Array2D.mapi (fun x y _ -> byte (processPixel x y)) img
 
-/// Rotating the picture 90 degrees. The "side" variable takes two values of the String type: right and left.
-let rotate90Degrees (side: string) (image: byte[,]) =
+/// Rotating the picture 90 degrees. True - clockwise, false - counterclockwise.
+let rotate90Degrees (side: bool) (image: byte[,]) =
     let height = Array2D.length1 image
     let width = Array2D.length2 image
     let res = Array2D.zeroCreate width height
 
-    if side = "right" then
+    if side then
         for i in 0 .. width - 1 do
             for j in 0 .. height - 1 do
                 res[i, height - 1 - j] <- image[j, i]
-    elif side = "left" then
+    else
         for i in 0 .. width - 1 do
             for j in 0 .. height - 1 do
                 res[width - 1 - i, j] <- image[j, i]
-    else
-        failwith $"Wrong value of 'side' variable. Look at function description for more info."
 
     res

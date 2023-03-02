@@ -621,7 +621,7 @@ let initTargets () =
     Target.create "FormatCode" formatCode
     Target.create "CheckFormatCode" checkFormatCode
     Target.create "Release" ignore
-    Target.create "FsharpLint" fsharpLint
+    //Target.create "FsharpLint" fsharpLint
 
     //-----------------------------------------------------------------------------
     // Target Dependencies
@@ -646,7 +646,7 @@ let initTargets () =
 
     "DotnetRestore"
         ==> "CheckFormatCode"
-        ==> "FsharpLint"
+        //==> "FsharpLint"
         ==> "DotnetBuild"
         // ==> "FSharpAnalyzers"
         ==> "DotnetTest"

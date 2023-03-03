@@ -14,16 +14,16 @@ module Main =
         let outputPath = parser.GetResult(OutputPath)
 
         if parser.Contains(Modifications) then
-            let listOfFunc = parser.GetResult(Modifications) |> List.map ModificationParser
+            let listOfFunc = parser.GetResult(Modifications) |> List.map modificationParser
             let composition = List.fold (>>) listOfFunc.Head listOfFunc.Tail
 
             match System.IO.Path.GetExtension inputPath with
-            | "" -> ArrayOfImagesProcessing inputPath outputPath composition
+            | "" -> arrayOfImagesProcessing inputPath outputPath composition
             | _ ->
                 let arr = loadAs2DArray inputPath
                 let filtered = composition arr
                 save2DByteArrayAsImage filtered outputPath
         else
-            printfn $"Zero modifications expected"
+            printfn $"No modifications for image processing"
 
         0

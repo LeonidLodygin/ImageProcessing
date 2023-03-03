@@ -3,6 +3,11 @@ module CpuImageProcessing
 open SixLabors.ImageSharp
 open SixLabors.ImageSharp.PixelFormats
 
+type Side =
+    | Right
+    | Left
+
+
 let loadAs2DArray (filePath: string) =
     let img = Image.Load<L8> filePath
     let res = Array2D.zeroCreate img.Height img.Width
@@ -93,18 +98,14 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
     Array2D.mapi (fun x y _ -> byte (processPixel x y)) img
 
 /// Rotating the picture 90 degrees. True - clockwise, false - counterclockwise.
-let rotate90Degrees (side: bool) (image: byte[,]) =
+let rotate90Degrees (side: Side) (image: byte[,]) =
     let height = Array2D.length1 image
     let width = Array2D.length2 image
     let res = Array2D.zeroCreate width height
+    let x = if side = Right then 1 else 0
 
-    if side then
-        for i in 0 .. width - 1 do
-            for j in 0 .. height - 1 do
-                res[i, height - 1 - j] <- image[j, i]
-    else
-        for i in 0 .. width - 1 do
-            for j in 0 .. height - 1 do
-                res[width - 1 - i, j] <- image[j, i]
+    for i in 0 .. width - 1 do
+        for j in 0 .. height - 1 do
+            res[i * x + (width - 1 - i) * (1 - x), (height - 1 - j) * x + j * (1 - x)] <- image[j, i]
 
     res

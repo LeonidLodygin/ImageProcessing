@@ -2,7 +2,7 @@
 
 open CpuImageProcessing
 
-let Extensions =
+let extensions =
     [| ".png"
        ".jpeg"
        ".jpg"
@@ -18,11 +18,11 @@ let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
 
     let filtered =
-        Array.filter (fun (x: string) -> Array.contains (System.IO.Path.GetExtension x) Extensions) files
+        Array.filter (fun (x: string) -> Array.contains (System.IO.Path.GetExtension x) extensions) files
 
     List.ofArray filtered
 
-let ArrayOfImagesProcessing inputDir outputDir conversion =
+let arrayOfImagesProcessing inputDir outputDir conversion =
     let list = listAllFiles inputDir
 
     let helper filePath =

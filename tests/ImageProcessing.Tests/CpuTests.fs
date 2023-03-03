@@ -22,7 +22,7 @@ module SimpleTests =
                   let image =
                       array2D [ [| 1uy; 2uy; 3uy |]; [| 1uy; 2uy; 3uy |]; [| 1uy; 2uy; 3uy |] ]
 
-                  let turnedImage = image |> rotate90Degrees true
+                  let turnedImage = image |> rotate90Degrees Right
 
                   let expected =
                       array2D [ [| 1uy; 1uy; 1uy |]; [| 2uy; 2uy; 2uy |]; [| 3uy; 3uy; 3uy |] ]
@@ -34,10 +34,10 @@ module SimpleTests =
 
                   let turnedImage =
                       image
-                      |> rotate90Degrees true
-                      |> rotate90Degrees true
-                      |> rotate90Degrees true
-                      |> rotate90Degrees true
+                      |> rotate90Degrees Right
+                      |> rotate90Degrees Right
+                      |> rotate90Degrees Right
+                      |> rotate90Degrees Right
 
                   Expect.equal image turnedImage "Image after 4 turns in one way should be the same with source image" ]
 
@@ -48,8 +48,8 @@ module PropertyTests =
             "Some property tests"
             [ testProperty "The image similarity with double left and right rotation"
               <| fun (arr: byte[,]) ->
-                  let turnedLeft = arr |> rotate90Degrees false |> rotate90Degrees false
-                  let turnedRight = arr |> rotate90Degrees true |> rotate90Degrees true
+                  let turnedLeft = arr |> rotate90Degrees Left |> rotate90Degrees Left
+                  let turnedRight = arr |> rotate90Degrees Right |> rotate90Degrees Right
 
                   Expect.equal
                       turnedLeft
@@ -61,5 +61,5 @@ module PropertyTests =
                   let arr =
                       Array2D.init ((abs length) + 2) ((abs length) + 2) (fun _ _ -> Random().Next(1, 10) |> byte)
 
-                  let newImage = ModificationParser modification arr
+                  let newImage = modificationParser modification arr
                   Expect.notEqual arr newImage "The image after modification should not be the same with the original" ]

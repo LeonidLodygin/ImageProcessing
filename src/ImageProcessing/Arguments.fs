@@ -12,15 +12,15 @@ type Modifications =
     | ClockwiseRotation
     | CounterClockwiseRotation
 
-let ModificationParser modification =
+let modificationParser modification =
     match modification with
     | Gauss5x5 -> applyFilter gaussianBlurKernel
     | Gauss7x7 -> applyFilter gaussianBlur7x7Kernel
     | Edges -> applyFilter edgesKernel
     | Sharpen -> applyFilter sharpenKernel
     | Emboss -> applyFilter embossKernel
-    | ClockwiseRotation -> rotate90Degrees true
-    | CounterClockwiseRotation -> rotate90Degrees false
+    | ClockwiseRotation -> rotate90Degrees Right
+    | CounterClockwiseRotation -> rotate90Degrees Left
 
 type CliArguments =
     | [<Mandatory; AltCommandLine("-ip")>] InputPath of inputPath: string

@@ -97,7 +97,6 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
 
     Array2D.mapi (fun x y _ -> byte (processPixel x y)) img
 
-/// Rotating the picture 90 degrees. True - clockwise, false - counterclockwise.
 let rotate90Degrees (side: Side) (image: byte[,]) =
     let height = Array2D.length1 image
     let width = Array2D.length2 image

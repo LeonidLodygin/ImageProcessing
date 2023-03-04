@@ -23,8 +23,8 @@ let modificationParser modification =
     | CounterClockwiseRotation -> rotate90Degrees Left
 
 type CliArguments =
-    | [<Mandatory; AltCommandLine("-ip")>] InputPath of inputPath: string
-    | [<Mandatory; AltCommandLine("-op")>] OutputPath of outputPath: string
+    | [<Mandatory; AltCommandLine("-i")>] InputPath of inputPath: string
+    | [<Mandatory; AltCommandLine("-o")>] OutputPath of outputPath: string
     | [<AltCommandLine("-mod")>] Modifications of modifications: List<Modifications>
 
     interface IArgParserTemplate with

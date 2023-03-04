@@ -101,10 +101,12 @@ let rotate90Degrees (side: Side) (image: byte[,]) =
     let height = Array2D.length1 image
     let width = Array2D.length2 image
     let res = Array2D.zeroCreate width height
-    let x = if side = Right then 1 else 0
 
     for i in 0 .. width - 1 do
         for j in 0 .. height - 1 do
-            res[i * x + (width - 1 - i) * (1 - x), (height - 1 - j) * x + j * (1 - x)] <- image[j, i]
+            if side = Right then
+                res[i, height - 1 - j] <- image[j, i]
+            else
+                res[width - 1 - i, j] <- image[j,i]
 
     res

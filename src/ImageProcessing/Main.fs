@@ -15,14 +15,15 @@ module Main =
 
         if parser.Contains(Modifications) then
             let listOfFunc = parser.GetResult(Modifications) |> List.map modificationParser
-            let composition = List.reduce (>>) listOfFunc
-
-            match System.IO.Path.GetExtension inputPath with
-            | "" -> arrayOfImagesProcessing inputPath outputPath composition
-            | _ ->
-                let arr = loadAs2DArray inputPath
-                let filtered = composition arr
-                save2DByteArrayAsImage filtered outputPath
+            match listOfFunc with
+            | [] -> printfn $"List of modifications is empty"
+            | _ -> let composition = List.reduce (>>) listOfFunc
+                   match System.IO.Path.GetExtension inputPath with
+                   | "" -> arrayOfImagesProcessing inputPath outputPath composition
+                   | _ ->
+                       let arr = loadAs2DArray inputPath
+                       let filtered = composition arr
+                       save2DByteArrayAsImage filtered outputPath
         else
             printfn $"No modifications for image processing"
 

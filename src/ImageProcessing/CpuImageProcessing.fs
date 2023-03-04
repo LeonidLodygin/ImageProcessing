@@ -107,6 +107,6 @@ let rotate90Degrees (side: Side) (image: byte[,]) =
             if side = Right then
                 res[i, height - 1 - j] <- image[j, i]
             else
-                res[width - 1 - i, j] <- image[j,i]
+                res[width - 1 - i, j] <- image[j, i]
 
     res

@@ -15,7 +15,7 @@ module Main =
 
         if parser.Contains(Modifications) then
             let listOfFunc = parser.GetResult(Modifications) |> List.map modificationParser
-            let composition = List.fold (>>) listOfFunc.Head listOfFunc.Tail
+            let composition = List.reduce (>>) listOfFunc
 
             match System.IO.Path.GetExtension inputPath with
             | "" -> arrayOfImagesProcessing inputPath outputPath composition

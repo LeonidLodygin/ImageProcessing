@@ -1,6 +1,7 @@
 ﻿module ImageArrayProcessing
 
 open CpuImageProcessing
+open Agents
 
 let extensions =
     [| ".png"
@@ -22,11 +23,17 @@ let listAllFiles dir =
 
     List.ofArray filtered
 
-let arrayOfImagesProcessing inputDir outputDir conversion =
+let arrayOfImagesProcessing inputDir outputDir conversion switcher =
     let list = listAllFiles inputDir
+    if switcher then
+        let agentSaver = imgSaver outputDir
+        let procAgent = imgProcessor conversion agentSaver
+        for file in list do
+            procAgent.Post(Img (loadAsImage file))
+        procAgent.PostAndReply EOS
+    else
+        let helper filePath =
+            let filtered = conversion (loadAsImage filePath)
+            saveImage filtered (System.IO.Path.Combine(outputDir, System.IO.Path.GetFileName filePath))
 
-    let helper filePath =
-        let filtered = conversion (loadAs2DArray filePath)
-        save2DByteArrayAsImage filtered (System.IO.Path.Combine(outputDir, System.IO.Path.GetFileName filePath))
-
-    List.iter helper list
+        List.iter helper list

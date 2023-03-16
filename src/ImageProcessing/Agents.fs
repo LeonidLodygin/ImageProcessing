@@ -60,8 +60,6 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
 
         loop ())
 
-
-
 let superAgent outputDir conversion =
 
     MailboxProcessor.Start(fun inbox ->
@@ -87,10 +85,10 @@ let superAgent outputDir conversion =
 
 let superImageProcessing inputDir outputDir conversion countAgent =
     let filesToProcess = listAllFiles inputDir
-    let superAgents = Array.zeroCreate countAgent |> Array.map (fun _ -> superAgent outputDir conversion)
+    let superAgents = Array.create countAgent (superAgent outputDir conversion)
+
     for file in filesToProcess do
-        (superAgents
-         |> Array.minBy (fun p -> p.CurrentQueueLength))
-            .Post(Path file)
+        (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)
+
     for agent in superAgents do
         agent.PostAndReply EOS

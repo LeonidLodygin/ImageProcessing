@@ -10,7 +10,7 @@ module Main =
 
     [<EntryPoint>]
     let main (argv: string array) =
-        (*let parser = ArgumentParser.Create<CliArguments>().ParseCommandLine argv
+        let parser = ArgumentParser.Create<CliArguments>().ParseCommandLine argv
         let inputPath = parser.GetResult(InputPath)
         let outputPath = parser.GetResult(OutputPath)
 
@@ -25,14 +25,14 @@ module Main =
                 match System.IO.Path.GetExtension inputPath with
                 | "" ->
                     if parser.Contains(Agents) then
-                        arrayOfImagesProcessing inputPath outputPath composition Agents.On
+                        arrayOfImagesProcessing inputPath outputPath composition On
                     else
-                        arrayOfImagesProcessing inputPath outputPath composition Agents.Off
+                        arrayOfImagesProcessing inputPath outputPath composition Off
                 | _ ->
                     let image = loadAsImage inputPath
                     let filtered = composition image
                     saveImage filtered outputPath
         else
-            printfn $"No modifications for image processing"*)
-        superImageProcessing "C:\Users\Леонид\Desktop\input" "C:\Users\Леонид\Desktop\output" (applyFilterToImage gaussianBlur7x7Kernel) 8
+            printfn $"No modifications for image processing"
+
         0

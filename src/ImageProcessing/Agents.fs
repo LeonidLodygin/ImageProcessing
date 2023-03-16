@@ -6,9 +6,13 @@ let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
     List.ofArray files
 
-type msg =
+type Msg =
     | Img of MyImage
     | EOS of AsyncReplyChannel<unit>
+
+type AgentStatus =
+    | On
+    | Off
 
 let imgSaver outDir =
     let outFile (imgName: string) = System.IO.Path.Combine(outDir, imgName)

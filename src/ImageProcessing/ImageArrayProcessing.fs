@@ -25,7 +25,7 @@ let listAllFiles dir =
 
 let arrayOfImagesProcessing inputDir outputDir conversion switcher =
     let list = listAllFiles inputDir
-    if switcher then
+    if switcher = On then
         let agentSaver = imgSaver outputDir
         let procAgent = imgProcessor conversion agentSaver
         for file in list do

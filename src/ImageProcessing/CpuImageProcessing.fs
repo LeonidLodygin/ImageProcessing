@@ -8,8 +8,6 @@ type Side =
     | Right
     | Left
 
-
-
 [<Struct>]
 type MyImage =
     val Data: array<byte>
@@ -24,7 +22,6 @@ type MyImage =
             Height = height
             Name = name
         }
-
 
 let loadAs2DArray (filePath: string) =
     let img = Image.Load<L8> filePath
@@ -49,18 +46,17 @@ let loadAsImage (file: string) =
     img.CopyPixelDataTo(Span<byte> buf)
     MyImage(buf, img.Width, img.Height, System.IO.Path.GetFileName file)
 
+let flat2dArray arr =
+          seq {
+              for x in [ 0 .. (Array2D.length1 arr) - 1 ] do
+                 for y in [ 0 .. (Array2D.length2 arr) - 1 ] do
+                     yield arr[x, y]
+              }
+              |> Array.ofSeq
+
 let save2DByteArrayAsImage (imageData: byte[,]) filePath =
     let height = Array2D.length1 imageData
     let width = Array2D.length2 imageData
-
-    let flat2dArray array2D =
-        seq {
-            for x in [ 0 .. (Array2D.length1 array2D) - 1 ] do
-                for y in [ 0 .. (Array2D.length2 array2D) - 1 ] do
-                    yield array2D[x, y]
-        }
-        |> Array.ofSeq
-
     let img = Image.LoadPixelData<L8>(flat2dArray imageData, width, height)
     img.Save filePath
     printfn $"%A{System.IO.Path.GetFileName filePath} successfully saved."

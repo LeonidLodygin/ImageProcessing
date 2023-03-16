@@ -22,11 +22,15 @@ module Main =
                 let composition = List.reduce (>>) listOfFunc
 
                 match System.IO.Path.GetExtension inputPath with
-                | "" -> arrayOfImagesProcessing inputPath outputPath composition
+                | "" ->
+                    if parser.Contains(Agents) then
+                        arrayOfImagesProcessing inputPath outputPath composition Agents.On
+                    else
+                        arrayOfImagesProcessing inputPath outputPath composition Agents.Off
                 | _ ->
-                    let arr = loadAs2DArray inputPath
-                    let filtered = composition arr
-                    save2DByteArrayAsImage filtered outputPath
+                    let image = loadAsImage inputPath
+                    let filtered = composition image
+                    saveImage filtered outputPath
         else
             printfn $"No modifications for image processing"
 

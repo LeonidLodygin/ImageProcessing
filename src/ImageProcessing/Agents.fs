@@ -1,6 +1,7 @@
 ﻿module Agents
 
 open CpuImageProcessing
+open System
 
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
@@ -83,9 +84,10 @@ let superAgent outputDir conversion =
 
         loop ())
 
-let superImageProcessing inputDir outputDir conversion countAgent =
+let superImageProcessing inputDir outputDir conversion =
     let filesToProcess = listAllFiles inputDir
-    let superAgents = Array.create countAgent (superAgent outputDir conversion)
+    let count = Environment.ProcessorCount
+    let superAgents = Array.init count (fun _ -> superAgent outputDir conversion)
 
     for file in filesToProcess do
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)

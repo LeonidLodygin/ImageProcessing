@@ -21,7 +21,11 @@ module SimpleTests =
               <| fun _ ->
                   let image = loadAsImage (src + "/input/test.png")
                   let filtered = applyFilterToImage gaussianBlur7x7Kernel image
-                  Expect.notEqual image.Data filtered.Data "Image after filter apply shouldn't be the same with source image"
+
+                  Expect.notEqual
+                      image.Data
+                      filtered.Data
+                      "Image after filter apply shouldn't be the same with source image"
               testCase "Correctness of rotation"
               <| fun _ ->
                   let image =
@@ -35,11 +39,11 @@ module SimpleTests =
                   Expect.equal turnedImage expected "rotate function is not correct"
               testCase "Correctness of rotation MyImage"
               <| fun _ ->
-                  let image = MyImage([|1uy; 2uy; 3uy ; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy|], 3, 3, "test")
+                  let image = MyImage([| 1uy; 2uy; 3uy; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy |], 3, 3, "test")
 
                   let turnedImage = image |> rotate90DegreesImage Right
 
-                  let expected = [|1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy|]
+                  let expected = [| 1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy |]
 
                   Expect.equal turnedImage.Data expected "rotate function is not correct"
               testCase "Image after 4 turns in one way should be the same"
@@ -65,7 +69,10 @@ module SimpleTests =
                       |> rotate90DegreesImage Right
                       |> rotate90DegreesImage Right
 
-                  Expect.equal image.Data turnedImage.Data "Image after 4 turns in one way should be the same with source image"     ]
+                  Expect.equal
+                      image.Data
+                      turnedImage.Data
+                      "Image after 4 turns in one way should be the same with source image" ]
 
 module PropertyTests =
     [<Tests>]
@@ -83,7 +90,9 @@ module PropertyTests =
                       "Image after 2 turns in one way should be the same with image turned 2 times in opposite way"
               testProperty "MyImage similarity with double left and right rotation"
               <| fun (arr: byte[,]) ->
-                  let image = MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+                  let image =
+                      MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+
                   let turnedLeft = image |> rotate90DegreesImage Left |> rotate90DegreesImage Left
                   let turnedRight = image |> rotate90DegreesImage Right |> rotate90DegreesImage Right
 
@@ -96,6 +105,13 @@ module PropertyTests =
               <| fun (length: int) (modification: Modifications) ->
                   let arr =
                       Array2D.init ((abs length) + 2) ((abs length) + 2) (fun _ _ -> Random().Next(1, 10) |> byte)
-                  let image = MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+
+                  let image =
+                      MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+
                   let newImage = modificationParser modification image
-                  Expect.notEqual image.Data newImage.Data "The image after modification should not be the same with the original" ]
+
+                  Expect.notEqual
+                      image.Data
+                      newImage.Data
+                      "The image after modification should not be the same with the original" ]

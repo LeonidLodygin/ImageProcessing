@@ -4,12 +4,13 @@ open Argu
 open Arguments
 open CpuImageProcessing
 open ImageArrayProcessing
+open Agents
 
 module Main =
 
     [<EntryPoint>]
     let main (argv: string array) =
-        let parser = ArgumentParser.Create<CliArguments>().ParseCommandLine argv
+        (*let parser = ArgumentParser.Create<CliArguments>().ParseCommandLine argv
         let inputPath = parser.GetResult(InputPath)
         let outputPath = parser.GetResult(OutputPath)
 
@@ -32,6 +33,6 @@ module Main =
                     let filtered = composition image
                     saveImage filtered outputPath
         else
-            printfn $"No modifications for image processing"
-
+            printfn $"No modifications for image processing"*)
+        superImageProcessing "C:\Users\Леонид\Desktop\input" "C:\Users\Леонид\Desktop\output" (applyFilterToImage gaussianBlur7x7Kernel) 8
         0

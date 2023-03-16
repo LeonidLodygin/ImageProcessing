@@ -16,12 +16,10 @@ type MyImage =
     val Name: string
 
     new(data, width, height, name) =
-        {
-            Data = data
-            Width = width
-            Height = height
-            Name = name
-        }
+        { Data = data
+          Width = width
+          Height = height
+          Name = name }
 
 let loadAs2DArray (filePath: string) =
     let img = Image.Load<L8> filePath
@@ -37,22 +35,18 @@ let loadAs2DArray (filePath: string) =
 let loadAsImage (file: string) =
     let img = Image.Load<L8> file
 
-    let buf =
-        Array.zeroCreate<byte> (
-            img.Width
-            * img.Height
-        )
+    let buf = Array.zeroCreate<byte> (img.Width * img.Height)
 
     img.CopyPixelDataTo(Span<byte> buf)
     MyImage(buf, img.Width, img.Height, System.IO.Path.GetFileName file)
 
 let flat2dArray arr =
-          seq {
-              for x in [ 0 .. (Array2D.length1 arr) - 1 ] do
-                 for y in [ 0 .. (Array2D.length2 arr) - 1 ] do
-                     yield arr[x, y]
-              }
-              |> Array.ofSeq
+    seq {
+        for x in [ 0 .. (Array2D.length1 arr) - 1 ] do
+            for y in [ 0 .. (Array2D.length2 arr) - 1 ] do
+                yield arr[x, y]
+    }
+    |> Array.ofSeq
 
 let save2DByteArrayAsImage (imageData: byte[,]) filePath =
     let height = Array2D.length1 imageData
@@ -130,9 +124,11 @@ let applyFilter (filter: float32[][]) (img: byte[,]) =
 let applyFilterToImage (filter: float32[][]) (img: MyImage) =
     let filterD = (Array.length filter) / 2
     let filter = Array.concat filter
+
     let processPixel p =
         let pw = p % img.Width
         let ph = p / img.Width
+
         let dataToHandle =
             [| for i in ph - filterD .. ph + filterD do
                    for j in pw - filterD .. pw + filterD do
@@ -161,10 +157,11 @@ let rotate90Degrees (side: Side) (image: byte[,]) =
 
 let rotate90DegreesImage (side: Side) (image: MyImage) =
     let res = Array.zeroCreate image.Data.Length
+
     for p in 0 .. image.Data.Length - 1 do
         if side = Right then
-                res[(p % image.Width)*image.Height + image.Height - 1 - p / image.Width] <- image.Data[p]
-            else
-                res[image.Height*(image.Width - 1 - p % image.Width) + p/image.Width] <- image.Data[p]
+            res[(p % image.Width) * image.Height + image.Height - 1 - p / image.Width] <- image.Data[p]
+        else
+            res[image.Height * (image.Width - 1 - p % image.Width) + p / image.Width] <- image.Data[p]
 
     MyImage(res, image.Height, image.Width, image.Name)

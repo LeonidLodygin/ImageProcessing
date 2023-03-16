@@ -25,11 +25,14 @@ let listAllFiles dir =
 
 let arrayOfImagesProcessing inputDir outputDir conversion switcher =
     let list = listAllFiles inputDir
+
     if switcher = On then
         let agentSaver = imgSaver outputDir
         let procAgent = imgProcessor conversion agentSaver
+
         for file in list do
-            procAgent.Post(Img (loadAsImage file))
+            procAgent.Post(Img(loadAsImage file))
+
         procAgent.PostAndReply EOS
     else
         let helper filePath =

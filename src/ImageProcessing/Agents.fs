@@ -20,7 +20,7 @@ type AgentStatus =
     | On
     | Off
 
-let rec imgSaver outDir =
+let imgSaver outDir =
 
     MailboxProcessor.Start(fun inbox ->
         async {

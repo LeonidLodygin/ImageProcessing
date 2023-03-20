@@ -1,7 +1,6 @@
 ﻿module Agents
 
 open CpuImageProcessing
-open System
 
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
@@ -11,42 +10,40 @@ let outFile (imgName: string) (outDir: string) = System.IO.Path.Combine(outDir, 
 
 type Msg =
     | Img of MyImage
-    | Path of string
     | EOS of AsyncReplyChannel<unit>
+
+type SuperMessage =
+    | Path of string
+    | SuperEOS of AsyncReplyChannel<unit>
 
 type AgentStatus =
     | On
     | Off
 
-let imgSaver outDir =
+let rec imgSaver outDir =
 
     MailboxProcessor.Start(fun inbox ->
-        let rec loop () =
-            async {
+        async {
+            while true do
                 let! msg = inbox.Receive()
 
                 match msg with
-                | Path _ -> failwith $"This agent is not able to read the image"
                 | EOS ch ->
                     printfn "Image saver is finished!"
                     ch.Reply()
                 | Img img ->
                     printfn $"Save: %A{img.Name}"
                     saveImage img (outFile img.Name outDir)
-                    return! loop ()
-            }
-
-        loop ())
+        })
 
 let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
-        let rec loop () =
-            async {
+        async {
+            while true do
                 let! msg = inbox.Receive()
 
                 match msg with
-                | Path _ -> failwith $"This agent is not able to read the image"
                 | EOS ch ->
                     printfn "Image processor is ready to finish!"
                     imgSaver.PostAndReply EOS
@@ -56,21 +53,17 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
                     printfn $"Filter: %A{img.Name}"
                     let filtered = filter img
                     imgSaver.Post(Img filtered)
-                    return! loop ()
-            }
-
-        loop ())
+        })
 
 let superAgent outputDir conversion =
 
     MailboxProcessor.Start(fun inbox ->
-        let rec loop () =
-            async {
+        async {
+            while true do
                 let! msg = inbox.Receive()
 
                 match msg with
-                | Img _ -> failwith $"This agent is not able to accept the image"
-                | EOS ch ->
+                | SuperEOS ch ->
                     printfn "SuperAgent is finished!"
                     ch.Reply()
                 | Path inputPath ->
@@ -79,18 +72,16 @@ let superAgent outputDir conversion =
                     let filtered = conversion image
                     saveImage filtered (outFile image.Name outputDir)
                     printfn $"Save: %A{image.Name}"
-                    return! loop ()
-            }
+        })
 
-        loop ())
-
-let superImageProcessing inputDir outputDir conversion =
+let superImageProcessing inputDir outputDir conversion countOfAgents =
     let filesToProcess = listAllFiles inputDir
-    let count = Environment.ProcessorCount
-    let superAgents = Array.init count (fun _ -> superAgent outputDir conversion)
+
+    let superAgents =
+        Array.init countOfAgents (fun _ -> superAgent outputDir conversion)
 
     for file in filesToProcess do
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)
 
     for agent in superAgents do
-        agent.PostAndReply EOS
+        agent.PostAndReply SuperEOS

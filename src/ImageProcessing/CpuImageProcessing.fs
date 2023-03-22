@@ -42,8 +42,8 @@ let loadAsImage (file: string) =
 
 let flat2dArray arr =
     seq {
-        for x in [ 0 .. (Array2D.length1 arr) - 1 ] do
-            for y in [ 0 .. (Array2D.length2 arr) - 1 ] do
+        for x in 0 .. (Array2D.length1 arr) - 1  do
+            for y in 0 .. (Array2D.length2 arr) - 1 do
                 yield arr[x, y]
     }
     |> Array.ofSeq

@@ -25,13 +25,15 @@ let modificationParser modification =
 type CliArguments =
     | [<Mandatory; AltCommandLine("-i")>] InputPath of inputPath: string
     | [<Mandatory; AltCommandLine("-o")>] OutputPath of outputPath: string
-    | [<AltCommandLine("-ag")>] Agents
+    | [<AltCommandLine("-ag"); Last>] Agents
+    | [<AltCommandLine("-sag"); Last>] SuperAgents of count: int
     | [<AltCommandLine("-mod")>] Modifications of modifications: List<Modifications>
 
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Agents -> "Apply modifications to an image using agents"
+            | SuperAgents _ -> "Apply modifications to an image using super agents"
             | Modifications _ -> "Set of modifications to image or image array"
             | InputPath _ -> "Input directory or path to the image"
             | OutputPath _ -> "Output directory or path to saved image"

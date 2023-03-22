@@ -26,6 +26,9 @@ module Main =
                 | "" ->
                     if parser.Contains(Agents) then
                         arrayOfImagesProcessing inputPath outputPath composition On
+                    elif parser.Contains(SuperAgents) then
+                        let countOfAgents = parser.GetResult(SuperAgents)
+                        superImageProcessing inputPath outputPath composition countOfAgents
                     else
                         arrayOfImagesProcessing inputPath outputPath composition Off
                 | _ ->

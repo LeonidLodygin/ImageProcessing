@@ -14,7 +14,7 @@ type Msg =
 
 type SuperMessage =
     | Path of string
-    | SuperEOS of AsyncReplyChannel<unit>
+    | EndOfStream of AsyncReplyChannel<unit>
 
 type AgentStatus =
     | On
@@ -63,7 +63,7 @@ let superAgent outputDir conversion =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | SuperEOS ch ->
+                | EndOfStream ch ->
                     printfn "SuperAgent is finished!"
                     ch.Reply()
                 | Path inputPath ->
@@ -84,4 +84,4 @@ let superImageProcessing inputDir outputDir conversion countOfAgents =
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)
 
     for agent in superAgents do
-        agent.PostAndReply SuperEOS
+        agent.PostAndReply EndOfStream

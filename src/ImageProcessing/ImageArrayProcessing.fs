@@ -23,10 +23,10 @@ let listAllFiles dir =
 
     List.ofArray filtered
 
-let arrayOfImagesProcessing inputDir outputDir conversion switcher =
+let arrayOfImagesProcessing inputDir outputDir conversion agentMod =
     let list = listAllFiles inputDir
 
-    if switcher = On then
+    if agentMod = On then
         let agentSaver = imgSaver outputDir
         let procAgent = imgProcessor conversion agentSaver
 

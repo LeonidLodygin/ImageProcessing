@@ -14,7 +14,7 @@ type Msg =
 
 type SuperMessage =
     | Path of string
-    | EndOfStream of AsyncReplyChannel<unit>
+    | EOS of AsyncReplyChannel<unit>
 
 type AgentStatus =
     | On
@@ -28,7 +28,7 @@ let imgSaver outDir =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | EOS ch ->
+                | Msg.EOS ch ->
                     printfn "Image saver is finished!"
                     ch.Reply()
                 | Img img ->
@@ -44,9 +44,9 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | EOS ch ->
+                | Msg.EOS ch ->
                     printfn "Image processor is ready to finish!"
-                    imgSaver.PostAndReply EOS
+                    imgSaver.PostAndReply Msg.EOS
                     printfn "Image processor is finished!"
                     ch.Reply()
                 | Img img ->
@@ -63,7 +63,7 @@ let superAgent outputDir conversion =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | EndOfStream ch ->
+                | SuperMessage.EOS ch ->
                     printfn "SuperAgent is finished!"
                     ch.Reply()
                 | Path inputPath ->
@@ -84,4 +84,4 @@ let superImageProcessing inputDir outputDir conversion countOfAgents =
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)
 
     for agent in superAgents do
-        agent.PostAndReply EndOfStream
+        agent.PostAndReply SuperMessage.EOS

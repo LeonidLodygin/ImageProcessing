@@ -224,10 +224,11 @@ var assemblies = [
   {
     "name": "ImageProcessing",
     "classes": [
-      { "name": "Arguments", "rp": "ImageProcessing_Arguments.html", "cl": 6, "ucl": 6, "cal": 12, "tl": 35, "ct": "LineCoverage", "mc": "-", "cb": 5, "tb": 7, "lch": [], "bch": [], "hc": [] },
-      { "name": "CpuImageProcessing", "rp": "ImageProcessing_CpuImageProcessing.html", "cl": 32, "ucl": 12, "cal": 44, "tl": 112, "ct": "LineCoverage", "mc": "-", "cb": 41, "tb": 44, "lch": [], "bch": [], "hc": [] },
-      { "name": "ImageArrayProcessing", "rp": "ImageProcessing_ImageArrayProcessing.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 32, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 2, "lch": [], "bch": [], "hc": [] },
-      { "name": "ImageProcessing.Main", "rp": "ImageProcessing_Main.html", "cl": 0, "ucl": 24, "cal": 24, "tl": 43, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 8, "lch": [], "bch": [], "hc": [] },
+      { "name": "Agents", "rp": "ImageProcessing_Agents.html", "cl": 0, "ucl": 39, "cal": 39, "tl": 59, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "Arguments", "rp": "ImageProcessing_Arguments.html", "cl": 8, "ucl": 5, "cal": 13, "tl": 37, "ct": "LineCoverage", "mc": "-", "cb": 7, "tb": 11, "lch": [], "bch": [], "hc": [] },
+      { "name": "CpuImageProcessing", "rp": "ImageProcessing_CpuImageProcessing.html", "cl": 62, "ucl": 7, "cal": 69, "tl": 167, "ct": "LineCoverage", "mc": "-", "cb": 48, "tb": 50, "lch": [], "bch": [], "hc": [] },
+      { "name": "ImageArrayProcessing", "rp": "ImageProcessing_ImageArrayProcessing.html", "cl": 0, "ucl": 14, "cal": 14, "tl": 42, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 6, "lch": [], "bch": [], "hc": [] },
+      { "name": "ImageProcessing.Main", "rp": "ImageProcessing_Main.html", "cl": 0, "ucl": 17, "cal": 17, "tl": 37, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 8, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
 
@@ -241,13 +242,6 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "ImageProcessing", "class": "CpuImageProcessing", "reportPath": "ImageProcessing_CpuImageProcessing.html", "methodName": "System.Byte[0...,0...] CpuImageProcessing::rotate90Degrees(System.String,System.Byte[0...,0...])", "methodShortName": "rotate90Degrees(...)", "fileIndex": 0, "line": 97,
-    "metrics": [
-      { "value": 11, "exceeded": false },
-      { "value": 1024, "exceeded": true },
-      { "value": 11.02, "exceeded": false },
-    ]},
-  {
     "assembly": "ImageProcessing", "class": "ImageProcessing.Main", "reportPath": "ImageProcessing_Main.html", "methodName": "System.Int32 ImageProcessing.Main::main(System.String[])", "methodShortName": "main(...)", "fileIndex": 0, "line": 12,
     "metrics": [
       { "value": 5, "exceeded": false },
@@ -255,7 +249,21 @@ var riskHotspots = [
       { "value": 30, "exceeded": true },
     ]},
   {
-    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Boolean ImageArrayProcessing/filtered@21::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 21,
+    "assembly": "ImageProcessing", "class": "Arguments", "reportPath": "ImageProcessing_Arguments.html", "methodName": "System.String Arguments/CliArguments::Argu.IArgParserTemplate.get_Usage()", "methodShortName": "Argu.IArgParserTemplate.get_Usage()", "fileIndex": 0, "line": 33,
+    "metrics": [
+      { "value": 4, "exceeded": false },
+      { "value": 4, "exceeded": false },
+      { "value": 20, "exceeded": true },
+    ]},
+  {
+    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Void ImageArrayProcessing::arrayOfImagesProcessing(System.String,System.String,Microsoft.FSharp.Core.FSharpFunc`2<CpuImageProcessing/MyImage,CpuImageProcessing/MyImage>,Agents/AgentStatus)", "methodShortName": "arrayOfImagesProcessing(...)", "fileIndex": 0, "line": 27,
+    "metrics": [
+      { "value": 4, "exceeded": false },
+      { "value": 8, "exceeded": false },
+      { "value": 20, "exceeded": true },
+    ]},
+  {
+    "assembly": "ImageProcessing", "class": "ImageArrayProcessing", "reportPath": "ImageProcessing_ImageArrayProcessing.html", "methodName": "System.Boolean ImageArrayProcessing/filtered@22::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 22,
     "metrics": [
       { "value": 4, "exceeded": false },
       { "value": 0, "exceeded": false },

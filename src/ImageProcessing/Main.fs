@@ -4,6 +4,7 @@ open Argu
 open Arguments
 open CpuImageProcessing
 open ImageArrayProcessing
+open Agents
 
 module Main =
 
@@ -22,11 +23,18 @@ module Main =
                 let composition = List.reduce (>>) listOfFunc
 
                 match System.IO.Path.GetExtension inputPath with
-                | "" -> arrayOfImagesProcessing inputPath outputPath composition
+                | "" ->
+                    if parser.Contains(Agents) then
+                        arrayOfImagesProcessing inputPath outputPath composition On
+                    elif parser.Contains(SuperAgents) then
+                        let countOfAgents = parser.GetResult(SuperAgents)
+                        superImageProcessing inputPath outputPath composition countOfAgents
+                    else
+                        arrayOfImagesProcessing inputPath outputPath composition Off
                 | _ ->
-                    let arr = loadAs2DArray inputPath
-                    let filtered = composition arr
-                    save2DByteArrayAsImage filtered outputPath
+                    let image = loadAsImage inputPath
+                    let filtered = composition image
+                    saveImage filtered outputPath
         else
             printfn $"No modifications for image processing"
 

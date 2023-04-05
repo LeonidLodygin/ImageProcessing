@@ -2,7 +2,8 @@ namespace ImageProcessing
 
 open Argu
 open Arguments
-open CpuImageProcessing
+open MyImage
+open Types
 open ImageArrayProcessing
 open Agents
 
@@ -37,5 +38,4 @@ module Main =
                     saveImage filtered outputPath
         else
             printfn $"No modifications for image processing"
-
         0

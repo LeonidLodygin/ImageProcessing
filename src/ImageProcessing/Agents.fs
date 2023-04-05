@@ -1,24 +1,13 @@
 ﻿module Agents
 
-open CpuImageProcessing
+open Types
+open MyImage
 
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
     List.ofArray files
 
 let outFile (imgName: string) (outDir: string) = System.IO.Path.Combine(outDir, imgName)
-
-type Msg =
-    | Img of MyImage
-    | EOS of AsyncReplyChannel<unit>
-
-type SuperMessage =
-    | Path of string
-    | EOS of AsyncReplyChannel<unit>
-
-type AgentStatus =
-    | On
-    | Off
 
 let imgSaver outDir =
 

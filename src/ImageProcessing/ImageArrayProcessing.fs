@@ -1,7 +1,8 @@
 ﻿module ImageArrayProcessing
 
-open CpuImageProcessing
+open MyImage
 open Agents
+open Types
 
 let extensions =
     [| ".png"

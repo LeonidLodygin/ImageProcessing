@@ -2,15 +2,8 @@
 
 open CpuImageProcessing
 open Argu
-
-type Modifications =
-    | Gauss5x5
-    | Gauss7x7
-    | Edges
-    | Sharpen
-    | Emboss
-    | ClockwiseRotation
-    | CounterClockwiseRotation
+open Kernels
+open Types
 
 let modificationParser modification =
     match modification with

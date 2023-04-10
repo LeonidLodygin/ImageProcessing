@@ -1,7 +1,6 @@
 namespace CpuTests
 
 open Expecto
-open CpuImageProcessing
 open Arguments
 open Kernels
 open MyImage
@@ -18,7 +17,7 @@ module SimpleTests =
             [ testCase "MyImage after gauss filter"
               <| fun _ ->
                   let image = loadAsImage (src + "/input/test.png")
-                  let filtered = applyFilterToImage gaussianBlur7x7Kernel image
+                  let filtered = CpuProcessing.applyFilter gaussianBlur7x7Kernel image
 
                   Expect.notEqual
                       image.Data
@@ -28,7 +27,7 @@ module SimpleTests =
               <| fun _ ->
                   let image = MyImage([| 1uy; 2uy; 3uy; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy |], 3, 3, "test")
 
-                  let turnedImage = image |> rotate90DegreesImage Right
+                  let turnedImage = image |> CpuProcessing.rotate Right
 
                   let expected = [| 1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy |]
 
@@ -39,10 +38,10 @@ module SimpleTests =
 
                   let turnedImage =
                       image
-                      |> rotate90DegreesImage Right
-                      |> rotate90DegreesImage Right
-                      |> rotate90DegreesImage Right
-                      |> rotate90DegreesImage Right
+                      |> CpuProcessing.rotate Right
+                      |> CpuProcessing.rotate Right
+                      |> CpuProcessing.rotate Right
+                      |> CpuProcessing.rotate Right
 
                   Expect.equal
                       image.Data
@@ -67,8 +66,8 @@ module PropertyTests =
                   let image =
                       MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
 
-                  let turnedLeft = image |> rotate90DegreesImage Left |> rotate90DegreesImage Left
-                  let turnedRight = image |> rotate90DegreesImage Right |> rotate90DegreesImage Right
+                  let turnedLeft = image |> CpuProcessing.rotate Left |> CpuProcessing.rotate Left
+                  let turnedRight = image |> CpuProcessing.rotate Right |> CpuProcessing.rotate Right
 
                   Expect.equal
                       turnedLeft

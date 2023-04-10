@@ -30,3 +30,11 @@ type Modifications =
     | Emboss
     | ClockwiseRotation
     | CounterClockwiseRotation
+    | MirrorVertical
+    | MirrorHorizontal
+
+type Devices =
+    | AnyGpu
+    | Nvidia
+    | Amd
+    | Intel

@@ -1,9 +1,9 @@
-module CpuImageProcessing
+module CpuProcessing
 
 open MyImage
 open Types
 
-let applyFilterToImage (filter: float32[][]) (img: MyImage) =
+let applyFilter (filter: float32[][]) (img: MyImage) =
     let filterD = (Array.length filter) / 2
     let filter = Array.concat filter
 
@@ -23,7 +23,7 @@ let applyFilterToImage (filter: float32[][]) (img: MyImage) =
 
     MyImage(Array.mapi (fun p _ -> byte (processPixel p)) img.Data, img.Width, img.Height, img.Name)
 
-let rotate90DegreesImage (side: Side) (image: MyImage) =
+let rotate (side: Side) (image: MyImage) =
     let res = Array.zeroCreate image.Data.Length
 
     for p in 0 .. image.Data.Length - 1 do
@@ -34,7 +34,7 @@ let rotate90DegreesImage (side: Side) (image: MyImage) =
 
     MyImage(res, image.Height, image.Width, image.Name)
 
-let ImageMirrorCPU (side: MirrorDirection) (image: MyImage) =
+let mirror (side: MirrorDirection) (image: MyImage) =
     let res = Array.zeroCreate image.Data.Length
 
     for p in 0 .. image.Data.Length - 1 do

@@ -20,8 +20,9 @@
     <Compile Include="Kernels.fs" />
     <Compile Include="MyImage.fs" />
     <Compile Include="Types.fs" />
-    <Compile Include="CpuImageProcessing.fs" />
-    <Compile Include="GpuImageProcessing.fs" />
+    <Compile Include="CpuProcessing.fs" />
+    <Compile Include="GpuKernels.fs" />
+    <Compile Include="GpuProcessing.fs" />
     <Compile Include="Agents.fs" />
     <Compile Include="ImageArrayProcessing.fs" />
     <Compile Include="Arguments.fs" />

@@ -9,7 +9,7 @@ let listAllFiles dir =
 
 let outFile (imgName: string) (outDir: string) = System.IO.Path.Combine(outDir, imgName)
 
-let imgSaver outDir =
+let imgSaver outDir (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
         async {
@@ -18,14 +18,14 @@ let imgSaver outDir =
 
                 match msg with
                 | Msg.EOS ch ->
-                    printfn "Image saver is finished!"
+                    logger.Post("Image saver is finished!")
                     ch.Reply()
                 | Img img ->
-                    printfn $"Save: %A{img.Name}"
+                    logger.Post($"Save: %A{img.Name}")
                     saveImage img (outFile img.Name outDir)
         })
 
-let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
+let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
         async {
@@ -34,17 +34,25 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) =
 
                 match msg with
                 | Msg.EOS ch ->
-                    printfn "Image processor is ready to finish!"
+                    logger.Post("Image processor is ready to finish!")
                     imgSaver.PostAndReply Msg.EOS
-                    printfn "Image processor is finished!"
+                    logger.Post("Image processor is finished!")
                     ch.Reply()
                 | Img img ->
-                    printfn $"Filter: %A{img.Name}"
+                    logger.Post($"Filter: %A{img.Name}")
                     let filtered = filter img
                     imgSaver.Post(Img filtered)
         })
 
-let superAgent outputDir conversion =
+let msgLogger() =
+    MailboxProcessor<string>.Start(fun inbox ->
+        async {
+            while true do
+                let! msg = inbox.Receive()
+                printfn $"%s{msg}"
+        })
+
+let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
         async {
@@ -53,21 +61,21 @@ let superAgent outputDir conversion =
 
                 match msg with
                 | SuperMessage.EOS ch ->
-                    printfn "SuperAgent is finished!"
+                    logger.Post("SuperAgent is finished!")
                     ch.Reply()
                 | Path inputPath ->
                     let image = loadAsImage inputPath
-                    printfn $"Filter: %A{image.Name}"
+                    logger.Post($"Filter: %A{image.Name}")
                     let filtered = conversion image
                     saveImage filtered (outFile image.Name outputDir)
-                    printfn $"Save: %A{image.Name}"
+                    logger.Post($"Save: %A{image.Name}")
         })
 
 let superImageProcessing inputDir outputDir conversion countOfAgents =
     let filesToProcess = listAllFiles inputDir
-
+    let logger = msgLogger()
     let superAgents =
-        Array.init countOfAgents (fun _ -> superAgent outputDir conversion)
+        Array.init countOfAgents (fun _ -> superAgent outputDir conversion logger)
 
     for file in filesToProcess do
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)

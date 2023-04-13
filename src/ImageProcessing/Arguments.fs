@@ -15,6 +15,7 @@ let modificationParser modification =
     | CounterClockwiseRotation -> CpuProcessing.rotate Left
     | MirrorVertical -> CpuProcessing.mirror Vertical
     | MirrorHorizontal -> CpuProcessing.mirror Horizontal
+    | FishEye -> CpuProcessing.fishEye
 
 let modificationGpuParser modification =
     match modification with
@@ -27,6 +28,7 @@ let modificationGpuParser modification =
     | CounterClockwiseRotation -> GpuProcessing.rotate Left
     | MirrorVertical -> GpuProcessing.mirror Vertical
     | MirrorHorizontal -> GpuProcessing.mirror Horizontal
+    | FishEye -> GpuProcessing.fishEye
 
 type CliArguments =
     | [<Mandatory; AltCommandLine("-i")>] InputPath of inputPath: string

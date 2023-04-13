@@ -32,6 +32,7 @@ type Modifications =
     | CounterClockwiseRotation
     | MirrorVertical
     | MirrorHorizontal
+    | FishEye
 
 type Devices =
     | AnyGpu

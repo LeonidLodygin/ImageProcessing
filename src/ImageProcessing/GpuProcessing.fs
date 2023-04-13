@@ -60,3 +60,19 @@ let mirror side (clContext: ClContext) localWorkSize =
         queue.Post(Msg.CreateFreeMsg input)
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Width, img.Height, img.Name)
+
+let fishEye (clContext: ClContext) localWorkSize =
+    let kernel = fishEyeKernel clContext localWorkSize
+    let queue = clContext.QueueProvider.CreateQueue()
+
+    fun (img: MyImage) ->
+
+        let mutable input = clContext.CreateClArray<_>(img.Data, HostAccessMode.NotAccessible)
+
+        let mutable output = clContext.CreateClArray( img.Data.Length, HostAccessMode.NotAccessible, allocationMode = AllocationMode.Default)
+
+        let result = Array.zeroCreate img.Data.Length
+        let result = queue.PostAndReply(fun ch -> Msg.CreateToHostMsg(kernel queue input img.Height img.Width output, result, ch))
+        queue.Post(Msg.CreateFreeMsg input)
+        queue.Post(Msg.CreateFreeMsg output)
+        MyImage(result, img.Width, img.Height, img.Name)

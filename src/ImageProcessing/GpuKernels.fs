@@ -1,6 +1,5 @@
 ﻿module GpuKernels
 
-
 open Types
 open Brahma.FSharp
 
@@ -78,6 +77,39 @@ let mirrorKernel (clContext: ClContext) localWorkSize side =
                     let p = r.GlobalID0
                     result[(imgH - 1 - p / imgW) * imgW + p % imgW] <- img[p]
             @>
+
+
+    let kernel = clContext.Compile kernel
+    fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
+        let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
+        let kernel = kernel.GetKernel()
+        commandQueue.Post(Msg.MsgSetArguments(fun () -> kernel.KernelFunc ndRange img imgW imgH result))
+        commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
+        result
+
+let fishEyeKernel (clContext: ClContext) localWorkSize =
+
+    let kernel =
+        <@
+            fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
+                    let distortion = 0.5f
+                    let p = r.GlobalID0
+                    if p / imgW < imgH then
+                        let h = float32 imgH
+                        let w = float32 imgW
+                        let xnd = (2.0f*float32 (p / imgW) - h)/h
+                        let ynd = (2.0f*float32 (p % imgW) - w)/w
+                        let radius = xnd*xnd + ynd*ynd
+                        let xdu, ydu =
+                            if 1.0f - distortion * radius = 0.0f then
+                                xnd, ynd
+                            else
+                                xnd / (1.0f - distortion * radius), ynd / (1.0f - distortion * radius)
+                        let xu = int((xdu + 1.0f)*h)/2
+                        let yu = int((ydu + 1.0f)*w)/2
+                        if 0 <= xu && xu < int h && 0 <= yu && yu < int w then
+                            result[p] <- img[xu * imgW + yu]
+        @>
 
 
     let kernel = clContext.Compile kernel

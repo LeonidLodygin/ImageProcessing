@@ -35,7 +35,7 @@ jobs:
       run: ./build.cmd DotnetBuild
       env:
         CI: true
-  self-hosted build:
+  self-hosted_build:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
@@ -51,14 +51,14 @@ jobs:
     - name: Use .NET Core global.json
       uses: actions/setup-dotnet@v1
 
-    - name: Self-hosted build
+    - name: Self-hosted_build
       if: runner.os != 'Windows'
       run: |
         chmod +x ./build.sh
         ./build.sh
       env:
         CI: true
-    - name: Self-hosted build
+    - name: Self-hosted_build
       if: runner.os == 'Windows'
       run: ./build.cmd
       env:

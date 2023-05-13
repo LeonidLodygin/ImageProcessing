@@ -28,4 +28,3 @@ let loadAsImage (file: string) =
 let saveImage (image: MyImage) file =
     let img = Image.LoadPixelData<L8>(image.Data, image.Width, image.Height)
     img.Save file
-

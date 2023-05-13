@@ -44,13 +44,14 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcesso
                     imgSaver.Post(Img filtered)
         })
 
-let msgLogger() =
-    MailboxProcessor<string>.Start(fun inbox ->
-        async {
-            while true do
-                let! msg = inbox.Receive()
-                printfn $"%s{msg}"
-        })
+let msgLogger () =
+    MailboxProcessor<string>.Start
+        (fun inbox ->
+            async {
+                while true do
+                    let! msg = inbox.Receive()
+                    printfn $"%s{msg}"
+            })
 
 let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
 
@@ -73,7 +74,8 @@ let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
 
 let superImageProcessing inputDir outputDir conversion countOfAgents =
     let filesToProcess = listAllFiles inputDir
-    let logger = msgLogger()
+    let logger = msgLogger ()
+
     let superAgents =
         Array.init countOfAgents (fun _ -> superAgent outputDir conversion logger)
 

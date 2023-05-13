@@ -28,7 +28,7 @@ let arrayOfImagesProcessing inputDir outputDir conversion agentMod =
     let list = listAllFiles inputDir
 
     if agentMod = On then
-        let logger = msgLogger()
+        let logger = msgLogger ()
         let agentSaver = imgSaver outputDir logger
         let procAgent = imgProcessor conversion agentSaver logger
 

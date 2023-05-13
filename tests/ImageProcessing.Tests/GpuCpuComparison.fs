@@ -14,16 +14,19 @@ module PropertyTests =
                   match modification with
                   | Gauss5x5 -> skiptest |> ignore
                   | Gauss7x7 -> skiptest |> ignore
-                  | Edges-> skiptest |> ignore
+                  | Edges -> skiptest |> ignore
                   | Sharpen -> skiptest |> ignore
                   | Emboss -> skiptest |> ignore
                   | FishEye -> skiptest |> ignore
                   | _ ->
-                  let image = GpuTests.SimpleTests.imageBuilder length
+                      let image = GpuTests.SimpleTests.imageBuilder length
 
-                  let newGPUImage = modificationGpuParser modification GpuTests.SimpleTests.context 64 image
-                  let newCPUImage = modificationParser modification image
-                  Expect.equal
-                      newCPUImage.Data
-                      newGPUImage.Data
-                      $"The image after modification on GPU should be the same with image after modification on CPU. Image data is %A{image.Data}"]
+                      let newGPUImage =
+                          modificationGpuParser modification GpuTests.SimpleTests.context 64 image
+
+                      let newCPUImage = modificationParser modification image
+
+                      Expect.equal
+                          newCPUImage.Data
+                          newGPUImage.Data
+                          $"The image after modification on GPU should be the same with image after modification on CPU. Image data is %A{image.Data}" ]

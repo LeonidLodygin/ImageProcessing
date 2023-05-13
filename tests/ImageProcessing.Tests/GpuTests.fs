@@ -11,6 +11,7 @@ open Brahma.FSharp
 module SimpleTests =
     let src = __SOURCE_DIRECTORY__
     let context = ClContext(ClDevice.GetFirstAppropriateDevice())
+
     let flat2dArray arr =
         seq {
             for x in 0 .. (Array2D.length1 arr) - 1 do
@@ -22,6 +23,7 @@ module SimpleTests =
     let imageBuilder length =
         let arr =
             Array2D.init ((abs length) + 2) ((abs length) + 2) (fun _ _ -> Random().Next(1, 10) |> byte)
+
         MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
 
     [<Tests>]
@@ -72,8 +74,15 @@ module PropertyTests =
               <| fun (length: int) ->
                   let image = SimpleTests.imageBuilder length
 
-                  let turnedLeft = image |> GpuProcessing.rotate Left SimpleTests.context 64 |> GpuProcessing.rotate Left SimpleTests.context 64
-                  let turnedRight = image |> GpuProcessing.rotate Right SimpleTests.context 64 |> GpuProcessing.rotate Right SimpleTests.context 64
+                  let turnedLeft =
+                      image
+                      |> GpuProcessing.rotate Left SimpleTests.context 64
+                      |> GpuProcessing.rotate Left SimpleTests.context 64
+
+                  let turnedRight =
+                      image
+                      |> GpuProcessing.rotate Right SimpleTests.context 64
+                      |> GpuProcessing.rotate Right SimpleTests.context 64
 
                   Expect.equal
                       turnedLeft.Data

@@ -53,6 +53,7 @@ let rotateKernel (clContext: ClContext) localWorkSize side =
             <@
                 fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
                     let p = r.GlobalID0
+
                     if p / imgW < imgH then
                         result[imgH * (imgW - 1 - p % imgW) + p / imgW] <- img[p]
             @>

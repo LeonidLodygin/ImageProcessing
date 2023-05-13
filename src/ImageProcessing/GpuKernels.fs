@@ -92,7 +92,7 @@ let fishEyeKernel (clContext: ClContext) localWorkSize =
     let kernel =
         <@
             fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                    let distortion = 0.5f
+                    let distortion = 1f
                     let p = r.GlobalID0
                     if p / imgW < imgH then
                         let h = float32 imgH

@@ -53,7 +53,8 @@ let rotateKernel (clContext: ClContext) localWorkSize side =
             <@
                 fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
                     let p = r.GlobalID0
-                    result[imgH * (imgW - 1 - p % imgW) + p / imgW] <- img[p]
+                    if p / imgW < imgH then
+                        result[imgH * (imgW - 1 - p % imgW) + p / imgW] <- img[p]
             @>
 
 
@@ -100,7 +101,7 @@ let fishEyeKernel (clContext: ClContext) localWorkSize =
     let kernel =
         <@
             fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                let distortion = 1f
+                let distortion = 0.5f
                 let p = r.GlobalID0
 
                 if p / imgW < imgH then

@@ -13,8 +13,8 @@ module SimpleTests =
     [<Tests>]
     let tests =
         testList
-            "Some simple tests"
-            [ testCase "MyImage after gauss filter"
+            "Some simple tests with CPU"
+            [ testCase "MyImage after gauss filter with CPU"
               <| fun _ ->
                   let image = loadAsImage (src + "/input/test.png")
                   let filtered = CpuProcessing.applyFilter gaussianBlur7x7Kernel image
@@ -23,7 +23,7 @@ module SimpleTests =
                       image.Data
                       filtered.Data
                       "Image after filter apply shouldn't be the same with source image"
-              testCase "Correctness of rotation MyImage"
+              testCase "Correctness of rotation MyImage with CPU"
               <| fun _ ->
                   let image = MyImage([| 1uy; 2uy; 3uy; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy |], 3, 3, "test")
 
@@ -32,7 +32,7 @@ module SimpleTests =
                   let expected = [| 1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy |]
 
                   Expect.equal turnedImage.Data expected "rotate function is not correct"
-              testCase "MyImage after 4 turns in one way should be the same"
+              testCase "MyImage after 4 turns in one way should be the same with CPU"
               <| fun _ ->
                   let image = loadAsImage (src + "/input/test4.jpg")
 
@@ -49,38 +49,31 @@ module SimpleTests =
                       "Image after 4 turns in one way should be the same with source image" ]
 
 module PropertyTests =
-    let flat2dArray arr =
-        seq {
-            for x in 0 .. (Array2D.length1 arr) - 1 do
-                for y in 0 .. (Array2D.length2 arr) - 1 do
-                    yield arr[x, y]
-        }
-        |> Array.ofSeq
 
     [<Tests>]
     let tests =
         testList
-            "Some property tests"
-            [ testProperty "MyImage similarity with double left and right rotation"
+            "Some property tests with CPU"
+            [ testProperty "MyImage similarity with double left and right rotation with CPU"
               <| fun (arr: byte[,]) ->
                   let image =
-                      MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+                      MyImage(GpuTests.SimpleTests.flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
 
                   let turnedLeft = image |> CpuProcessing.rotate Left |> CpuProcessing.rotate Left
                   let turnedRight = image |> CpuProcessing.rotate Right |> CpuProcessing.rotate Right
 
                   Expect.equal
-                      turnedLeft
-                      turnedRight
+                      turnedLeft.Data
+                      turnedRight.Data
                       "Image after 2 turns in one way should be the same with image turned 2 times in opposite way"
 
-              testProperty "Modification of image"
+              testProperty "Modification of image with CPU"
               <| fun (length: int) (modification: Modifications) ->
                   let arr =
                       Array2D.init ((abs length) + 2) ((abs length) + 2) (fun _ _ -> Random().Next(1, 10) |> byte)
 
                   let image =
-                      MyImage(flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
+                      MyImage(GpuTests.SimpleTests.flat2dArray arr, Array2D.length2 arr, Array2D.length1 arr, "test")
 
                   let newImage = modificationParser modification image
 

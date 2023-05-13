@@ -7,7 +7,9 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="AssemblyInfo.fs" />
+        <Compile Include="GpuTests.fs" />
         <Compile Include="CpuTests.fs" />
+        <Compile Include="GpuCpuComparison.fs" />
         <Compile Include="Main.fs" />
     </ItemGroup>
     <ItemGroup>

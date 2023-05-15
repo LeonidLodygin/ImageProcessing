@@ -40,23 +40,16 @@ let applyFilterKernel (clContext: ClContext) localWorkSize =
 let rotateKernel (clContext: ClContext) localWorkSize side =
 
     let kernel =
-        match side with
-        | Right ->
-            <@
-                fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                    let p = r.GlobalID0
+        <@
+            fun (r: Range1D) (img: ClArray<_>) imgW imgH (i: int) (result: ClArray<_>) ->
+                let p = r.GlobalID0
 
-                    if p / imgW < imgH then
+                if p / imgW < imgH then
+                    if i = 1 then
                         result[(p % imgW) * imgH + imgH - 1 - p / imgW] <- img[p]
-            @>
-        | Left ->
-            <@
-                fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                    let p = r.GlobalID0
-
-                    if p / imgW < imgH then
+                    else
                         result[imgH * (imgW - 1 - p % imgW) + p / imgW] <- img[p]
-            @>
+        @>
 
 
     let kernel = clContext.Compile kernel
@@ -64,28 +57,24 @@ let rotateKernel (clContext: ClContext) localWorkSize side =
     fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
         let kernel = kernel.GetKernel()
-        commandQueue.Post(Msg.MsgSetArguments(fun () -> kernel.KernelFunc ndRange img imgW imgH result))
+        let i = if side = Right then 1 else 0
+        commandQueue.Post(Msg.MsgSetArguments(fun () -> kernel.KernelFunc ndRange img imgW imgH i result))
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
 let mirrorKernel (clContext: ClContext) localWorkSize side =
 
     let kernel =
-        match side with
-        | Vertical ->
-            <@
-                fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                    let p = r.GlobalID0
+        <@
+            fun (r: Range1D) (img: ClArray<_>) imgW imgH i (result: ClArray<_>) ->
+                let p = r.GlobalID0
 
-                    if p / imgW < imgH then
+                if p / imgW < imgH then
+                    if i = 1 then
                         result[p - p % imgW + imgW - 1 - p % imgW] <- img[p]
-            @>
-        | Horizontal ->
-            <@
-                fun (r: Range1D) (img: ClArray<_>) imgW imgH (result: ClArray<_>) ->
-                    let p = r.GlobalID0
-                    result[(imgH - 1 - p / imgW) * imgW + p % imgW] <- img[p]
-            @>
+                    else
+                        result[(imgH - 1 - p / imgW) * imgW + p % imgW] <- img[p]
+        @>
 
 
     let kernel = clContext.Compile kernel
@@ -93,7 +82,8 @@ let mirrorKernel (clContext: ClContext) localWorkSize side =
     fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
         let kernel = kernel.GetKernel()
-        commandQueue.Post(Msg.MsgSetArguments(fun () -> kernel.KernelFunc ndRange img imgW imgH result))
+        let i = if side = Vertical then 1 else 0
+        commandQueue.Post(Msg.MsgSetArguments(fun () -> kernel.KernelFunc ndRange img imgW imgH i result))
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 

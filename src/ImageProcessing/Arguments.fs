@@ -3,6 +3,7 @@
 open Argu
 open Kernels
 open Types
+open Brahma.FSharp
 
 let modificationParser modification =
     match modification with
@@ -29,6 +30,13 @@ let modificationGpuParser modification =
     | MirrorVertical -> GpuProcessing.mirror Vertical
     | MirrorHorizontal -> GpuProcessing.mirror Horizontal
     | FishEye -> GpuProcessing.fishEye
+
+let deviceParser device =
+    match device with
+    | AnyGpu -> Platform.Any
+    | Nvidia -> Platform.Nvidia
+    | Amd -> Platform.Amd
+    | Intel -> Platform.Intel
 
 type CliArguments =
     | [<Mandatory; AltCommandLine("-i")>] InputPath of inputPath: string

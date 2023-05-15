@@ -21,33 +21,15 @@ module Main =
 
             let filters =
                 if parser.Contains(GpGpu) then
-                    let device = parser.GetResult(GpGpu)
+                    let device = parser.GetResult(GpGpu) |> deviceParser
 
-                    match device with
-                    | AnyGpu ->
-                        List.map
-                            (fun n -> modificationGpuParser n (ClContext(ClDevice.GetFirstAppropriateDevice())) 64)
-                            listOfFunc
-                    | Nvidia ->
+                    if ClDevice.GetAvailableDevices(device) |> Seq.isEmpty then
+                        printfn "GPU was not found, image processing will continue on the CPU"
+                        listOfFunc |> List.map modificationParser
+                    else
                         List.map
                             (fun n ->
-                                modificationGpuParser
-                                    n
-                                    (ClContext(ClDevice.GetFirstAppropriateDevice(Platform.Nvidia)))
-                                    64)
-                            listOfFunc
-                    | Amd ->
-                        List.map
-                            (fun n ->
-                                modificationGpuParser n (ClContext(ClDevice.GetFirstAppropriateDevice(Platform.Amd))) 64)
-                            listOfFunc
-                    | Intel ->
-                        List.map
-                            (fun n ->
-                                modificationGpuParser
-                                    n
-                                    (ClContext(ClDevice.GetFirstAppropriateDevice(Platform.Intel)))
-                                    64)
+                                modificationGpuParser n (ClContext(ClDevice.GetFirstAppropriateDevice(device))) 64)
                             listOfFunc
                 else
                     listOfFunc |> List.map modificationParser

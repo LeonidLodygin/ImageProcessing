@@ -52,6 +52,7 @@ let msgLogger () =
             async {
                 while true do
                     let! msg = inbox.Receive()
+
                     match msg with
                     | Message x -> printfn $"%s{x}"
                     | ProcessorEOS ch ->

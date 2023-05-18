@@ -34,7 +34,9 @@ module SimpleTests =
             [ testCase "MyImage after gauss filter with GPU"
               <| fun _ ->
                   let image = loadAsImage (src + "/input/test.png")
-                  let filtered = GpuProcessing.applyFilter gaussianBlur7x7Kernel context 64 queue image
+
+                  let filtered =
+                      GpuProcessing.applyFilter gaussianBlur7x7Kernel context 64 queue image
 
                   Expect.notEqual
                       image.Data
@@ -100,7 +102,8 @@ module PropertyTests =
                   | _ ->
                       let image = SimpleTests.imageBuilder length
 
-                      let newImage = modificationGpuParser modification SimpleTests.context 64 SimpleTests.queue image
+                      let newImage =
+                          modificationGpuParser modification SimpleTests.context 64 SimpleTests.queue image
 
                       Expect.notEqual
                           image.Data

@@ -29,10 +29,7 @@ module Main =
                     else
                         let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
                         let queue = clContext.QueueProvider.CreateQueue()
-                        List.map
-                            (fun n ->
-                                modificationGpuParser n clContext 64 queue)
-                            listOfFunc
+                        List.map (fun n -> modificationGpuParser n clContext 64 queue) listOfFunc
                 else
                     listOfFunc |> List.map modificationParser
 

@@ -27,9 +27,11 @@ module Main =
                         printfn "GPU was not found, image processing will continue on the CPU"
                         listOfFunc |> List.map modificationParser
                     else
+                        let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
+                        let queue = clContext.QueueProvider.CreateQueue()
                         List.map
                             (fun n ->
-                                modificationGpuParser n (ClContext(ClDevice.GetFirstAppropriateDevice(device))) 64)
+                                modificationGpuParser n clContext 64 queue)
                             listOfFunc
                 else
                     listOfFunc |> List.map modificationParser

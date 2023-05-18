@@ -22,7 +22,12 @@ module PropertyTests =
                       let image = GpuTests.SimpleTests.imageBuilder length
 
                       let newGPUImage =
-                          modificationGpuParser modification GpuTests.SimpleTests.context 64 GpuTests.SimpleTests.queue image
+                          modificationGpuParser
+                              modification
+                              GpuTests.SimpleTests.context
+                              64
+                              GpuTests.SimpleTests.queue
+                              image
 
                       let newCPUImage = modificationParser modification image
 

@@ -54,7 +54,8 @@ let rotate side kernel (clContext: ClContext) localWorkSize (queue: MailboxProce
         let result = Array.zeroCreate img.Data.Length
 
         let result =
-            queue.PostAndReply(fun ch -> Msg.CreateToHostMsg(kernel side queue input img.Height img.Width output, result, ch))
+            queue.PostAndReply(fun ch ->
+                Msg.CreateToHostMsg(kernel side queue input img.Height img.Width output, result, ch))
 
         queue.Post(Msg.CreateFreeMsg input)
         queue.Post(Msg.CreateFreeMsg output)

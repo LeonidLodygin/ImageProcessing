@@ -17,8 +17,8 @@ let imgSaver outDir (logger: MailboxProcessor<_>) =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | Msg.SaverEOS ch ->
-                    logger.PostAndReply SaverEOS
+                | EOS ch ->
+                    logger.Post(Message "Image saver is finished!")
                     ch.Reply()
                 | Img img ->
                     logger.Post(Message $"Save: %A{img.Name}")
@@ -34,10 +34,10 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcesso
                 let! msg = inbox.Receive()
 
                 match msg with
-                | ProcessorEOS ch ->
+                | EOS ch ->
                     logger.Post(Message "Image processor is ready to finish!")
-                    imgSaver.PostAndReply SaverEOS
-                    logger.PostAndReply ProcessorEOS
+                    imgSaver.PostAndReply Msg.EOS
+                    logger.Post(Message "Image processor is finished!")
                     ch.Reply()
                 | Img img ->
                     logger.Post(Message $"Filter: %A{img.Name}")
@@ -47,25 +47,18 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcesso
         })
 
 let msgLogger () =
-    MailboxProcessor<Msg>.Start
-        (fun inbox ->
-            async {
-                while true do
-                    let! msg = inbox.Receive()
+    MailboxProcessor.Start(fun inbox ->
+        async {
+            while true do
+                let! msg = inbox.Receive()
 
-                    match msg with
-                    | Message x -> printfn $"%s{x}"
-                    | ProcessorEOS ch ->
-                        printfn "Image processor is finished!"
-                        ch.Reply()
-                    | SaverEOS ch ->
-                        printfn "Image saver is finished!"
-                        ch.Reply()
-                    | SuperEOS ch ->
-                        printfn "SuperAgent is finished!"
-                        ch.Reply()
-                    | _ -> failwith "msgLogger received the wrong message"
-            })
+                match msg with
+                | EOS ch ->
+                    printfn "msgLogger is finished!"
+                    ch.Reply()
+                | Message s -> printfn $"%s{s}"
+                | _ -> failwith "msgLogger received the wrong message"
+        })
 
 let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
 
@@ -75,8 +68,8 @@ let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
                 let! msg = inbox.Receive()
 
                 match msg with
-                | SuperEOS ch ->
-                    logger.PostAndReply SuperEOS
+                | EOS ch ->
+                    logger.Post(Message "SuperAgent is finished!")
                     ch.Reply()
                 | Path inputPath ->
                     let image = loadAsImage inputPath
@@ -98,4 +91,6 @@ let superImageProcessing inputDir outputDir conversion countOfAgents =
         (superAgents |> Array.minBy (fun p -> p.CurrentQueueLength)).Post(Path file)
 
     for agent in superAgents do
-        agent.PostAndReply SuperEOS
+        agent.PostAndReply EOS
+
+    logger.PostAndReply EOS

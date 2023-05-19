@@ -13,9 +13,7 @@ type MirrorDirection =
 type Msg =
     | Img of MyImage
     | Path of string
-    | SuperEOS of AsyncReplyChannel<unit>
-    | SaverEOS of AsyncReplyChannel<unit>
-    | ProcessorEOS of AsyncReplyChannel<unit>
+    | EOS of AsyncReplyChannel<unit>
     | Message of string
 
 type AgentStatus =

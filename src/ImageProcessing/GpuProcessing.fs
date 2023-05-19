@@ -2,9 +2,10 @@
 
 open Brahma.FSharp
 open MyImage
+open GpuKernels
 
-
-let applyFilter (filter: float32[][]) kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
+let applyFilter (filter: float32[][]) kernel (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
+    let kernel = applyFilterProcessor kernel localWorkSize
 
     fun (img: MyImage) ->
 
@@ -35,7 +36,8 @@ let applyFilter (filter: float32[][]) kernel (clContext: ClContext) (queue: Mail
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Width, img.Height, img.Name)
 
-let rotate kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
+let rotate side kernel (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
+    let kernel = rotateKernelProcessor kernel localWorkSize
 
     fun (img: MyImage) ->
 
@@ -52,13 +54,14 @@ let rotate kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
         let result = Array.zeroCreate img.Data.Length
 
         let result =
-            queue.PostAndReply(fun ch -> Msg.CreateToHostMsg(kernel queue input img.Height img.Width output, result, ch))
+            queue.PostAndReply(fun ch -> Msg.CreateToHostMsg(kernel side queue input img.Height img.Width output, result, ch))
 
         queue.Post(Msg.CreateFreeMsg input)
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Height, img.Width, img.Name)
 
-let mirror kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
+let mirror side kernel (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
+    let kernel = mirrorKernelProcessor kernel localWorkSize
 
     fun (img: MyImage) ->
 
@@ -75,13 +78,15 @@ let mirror kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
         let result = Array.zeroCreate img.Data.Length
 
         let result =
-            queue.PostAndReply(fun ch -> Msg.CreateToHostMsg(kernel queue input img.Height img.Width output, result, ch))
+            queue.PostAndReply(fun ch ->
+                Msg.CreateToHostMsg(kernel side queue input img.Height img.Width output, result, ch))
 
         queue.Post(Msg.CreateFreeMsg input)
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Width, img.Height, img.Name)
 
-let fishEye kernel (clContext: ClContext) (queue: MailboxProcessor<Msg>) =
+let fishEye kernel (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
+    let kernel = fishEyeKernelProcessor kernel localWorkSize
 
     fun (img: MyImage) ->
 

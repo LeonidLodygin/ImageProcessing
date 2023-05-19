@@ -29,22 +29,12 @@ module Main =
                     else
                         let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
                         let queue = clContext.QueueProvider.CreateQueue()
-                        let kernelFilter = GpuKernels.applyFilterKernel clContext 64
-                        let kernelFish = GpuKernels.fishEyeKernel clContext 64
-                        let kernelMirrorHor = GpuKernels.mirrorKernel clContext 64 Horizontal
-                        let kernelMirrorVer = GpuKernels.mirrorKernel clContext 64 Vertical
-                        let kernelRotateRight = GpuKernels.rotateKernel clContext 64 Right
-                        let kernelRotateLeft = GpuKernels.rotateKernel clContext 64 Left
-
-                        let kernelsCortege =
-                            (kernelFilter,
-                             kernelRotateRight,
-                             kernelRotateLeft,
-                             kernelMirrorVer,
-                             kernelMirrorHor,
-                             kernelFish)
-
-                        List.map (fun n -> (modificationGpuParser n kernelsCortege) clContext queue) listOfFunc
+                        let filterKernel = GpuKernels.applyFilterKernel clContext
+                        let rotateKernel = GpuKernels.rotateKernel clContext
+                        let mirrorKernel = GpuKernels.mirrorKernel clContext
+                        let fishKernel = GpuKernels.fishEyeKernel clContext
+                        let kernelsCortege = (filterKernel, rotateKernel, mirrorKernel, fishKernel)
+                        List.map (fun n -> modificationGpuParser n kernelsCortege clContext 64 queue) listOfFunc
                 else
                     listOfFunc |> List.map modificationParser
 

@@ -3,7 +3,7 @@
 open Types
 open Brahma.FSharp
 
-let applyFilterKernel (clContext: ClContext) localWorkSize =
+let applyFilterKernel (clContext: ClContext) =
 
     let kernel =
         <@
@@ -28,7 +28,12 @@ let applyFilterKernel (clContext: ClContext) localWorkSize =
                 result[p] <- byte (int res)
         @>
 
-    let kernel = clContext.Compile kernel
+    clContext.Compile kernel
+
+let applyFilterProcessor
+    (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> ClArray<float32> -> int -> ClArray<byte> -> unit>)
+    localWorkSize
+    =
 
     fun (commandQueue: MailboxProcessor<_>) (filter: ClArray<float32>) filterD (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
@@ -37,7 +42,7 @@ let applyFilterKernel (clContext: ClContext) localWorkSize =
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
-let rotateKernel (clContext: ClContext) localWorkSize side =
+let rotateKernel (clContext: ClContext) =
 
     let kernel =
         <@
@@ -52,7 +57,13 @@ let rotateKernel (clContext: ClContext) localWorkSize side =
         @>
 
 
-    let kernel = clContext.Compile kernel
+    clContext.Compile kernel
+
+let rotateKernelProcessor
+    (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> int -> ClArray<byte> -> unit>)
+    localWorkSize
+    side
+    =
 
     fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
@@ -62,7 +73,7 @@ let rotateKernel (clContext: ClContext) localWorkSize side =
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
-let mirrorKernel (clContext: ClContext) localWorkSize side =
+let mirrorKernel (clContext: ClContext) =
 
     let kernel =
         <@
@@ -77,7 +88,13 @@ let mirrorKernel (clContext: ClContext) localWorkSize side =
         @>
 
 
-    let kernel = clContext.Compile kernel
+    clContext.Compile kernel
+
+let mirrorKernelProcessor
+    (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> int -> ClArray<byte> -> unit>)
+    localWorkSize
+    side
+    =
 
     fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)
@@ -87,7 +104,7 @@ let mirrorKernel (clContext: ClContext) localWorkSize side =
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
-let fishEyeKernel (clContext: ClContext) localWorkSize =
+let fishEyeKernel (clContext: ClContext) =
 
     let kernel =
         <@
@@ -116,7 +133,12 @@ let fishEyeKernel (clContext: ClContext) localWorkSize =
         @>
 
 
-    let kernel = clContext.Compile kernel
+    clContext.Compile kernel
+
+let fishEyeKernelProcessor
+    (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> ClArray<byte> -> unit>)
+    localWorkSize
+    =
 
     fun (commandQueue: MailboxProcessor<_>) (img: ClArray<byte>) imgH imgW (result: ClArray<_>) ->
         let ndRange = Range1D.CreateValid(imgH * imgW, localWorkSize)

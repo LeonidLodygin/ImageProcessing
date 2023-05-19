@@ -5,14 +5,10 @@ open Kernels
 open Types
 open Brahma.FSharp
 
-let first (x, _, _, _, _, _) = x
-let second (_, x, _, _, _, _) = x
-let third (_, _, x, _, _, _) = x
-let fourth (_, _, _, x, _, _) = x
-let fifth (_, _, _, _, x, _) = x
-let sixth (_, _, _, _, _, x) = x
-
-
+let first (x, _, _, _) = x
+let second (_, x, _, _) = x
+let third (_, _, x, _) = x
+let fourth (_, _, _, x) = x
 
 let modificationParser modification =
     match modification with
@@ -34,11 +30,11 @@ let modificationGpuParser modification cortege =
     | Edges -> GpuProcessing.applyFilter edgesKernel (first cortege)
     | Sharpen -> GpuProcessing.applyFilter sharpenKernel (first cortege)
     | Emboss -> GpuProcessing.applyFilter embossKernel (first cortege)
-    | ClockwiseRotation -> GpuProcessing.rotate (second cortege)
-    | CounterClockwiseRotation -> GpuProcessing.rotate (third cortege)
-    | MirrorVertical -> GpuProcessing.mirror (fourth cortege)
-    | MirrorHorizontal -> GpuProcessing.mirror (fifth cortege)
-    | FishEye -> GpuProcessing.fishEye (sixth cortege)
+    | ClockwiseRotation -> GpuProcessing.rotate Right (second cortege)
+    | CounterClockwiseRotation -> GpuProcessing.rotate Left (second cortege)
+    | MirrorVertical -> GpuProcessing.mirror Vertical (third cortege)
+    | MirrorHorizontal -> GpuProcessing.mirror Horizontal (third cortege)
+    | FishEye -> GpuProcessing.fishEye (fourth cortege)
 
 let deviceParser device =
     match device with

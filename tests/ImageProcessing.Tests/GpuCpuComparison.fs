@@ -24,8 +24,8 @@ module PropertyTests =
                       let newGPUImage =
                           modificationGpuParser
                               modification
+                              GpuTests.SimpleTests.kernelsCortege
                               GpuTests.SimpleTests.context
-                              64
                               GpuTests.SimpleTests.queue
                               image
 

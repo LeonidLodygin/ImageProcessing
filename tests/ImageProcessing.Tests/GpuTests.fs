@@ -12,6 +12,15 @@ module SimpleTests =
     let src = __SOURCE_DIRECTORY__
     let context = ClContext(ClDevice.GetFirstAppropriateDevice())
     let queue = context.QueueProvider.CreateQueue()
+    let kernelFilter = GpuKernels.applyFilterKernel context 64
+    let kernelFish = GpuKernels.fishEyeKernel context 64
+    let kernelMirrorHor = GpuKernels.mirrorKernel context 64 Horizontal
+    let kernelMirrorVer = GpuKernels.mirrorKernel context 64 Vertical
+    let kernelRotateRight = GpuKernels.rotateKernel context 64 Right
+    let kernelRotateLeft = GpuKernels.rotateKernel context 64 Left
+
+    let kernelsCortege =
+        (kernelFilter, kernelRotateRight, kernelRotateLeft, kernelMirrorVer, kernelMirrorHor, kernelFish)
 
     let flat2dArray arr =
         seq {
@@ -36,7 +45,7 @@ module SimpleTests =
                   let image = loadAsImage (src + "/input/test.png")
 
                   let filtered =
-                      GpuProcessing.applyFilter gaussianBlur7x7Kernel context 64 queue image
+                      GpuProcessing.applyFilter gaussianBlur7x7Kernel kernelFilter context queue image
 
                   Expect.notEqual
                       image.Data
@@ -46,7 +55,7 @@ module SimpleTests =
               <| fun _ ->
                   let image = MyImage([| 1uy; 2uy; 3uy; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy |], 3, 3, "test")
 
-                  let turnedImage = image |> GpuProcessing.rotate Right context 64 queue
+                  let turnedImage = image |> GpuProcessing.rotate kernelRotateRight context queue
 
                   let expected = [| 1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy |]
 
@@ -57,10 +66,10 @@ module SimpleTests =
 
                   let turnedImage =
                       image
-                      |> GpuProcessing.rotate Right context 64 queue
-                      |> GpuProcessing.rotate Right context 64 queue
-                      |> GpuProcessing.rotate Right context 64 queue
-                      |> GpuProcessing.rotate Right context 64 queue
+                      |> GpuProcessing.rotate kernelRotateRight context queue
+                      |> GpuProcessing.rotate kernelRotateRight context queue
+                      |> GpuProcessing.rotate kernelRotateRight context queue
+                      |> GpuProcessing.rotate kernelRotateRight context queue
 
                   Expect.equal
                       image.Data
@@ -79,13 +88,13 @@ module PropertyTests =
 
                   let turnedLeft =
                       image
-                      |> GpuProcessing.rotate Left SimpleTests.context 64 SimpleTests.queue
-                      |> GpuProcessing.rotate Left SimpleTests.context 64 SimpleTests.queue
+                      |> GpuProcessing.rotate SimpleTests.kernelRotateLeft SimpleTests.context SimpleTests.queue
+                      |> GpuProcessing.rotate SimpleTests.kernelRotateLeft SimpleTests.context SimpleTests.queue
 
                   let turnedRight =
                       image
-                      |> GpuProcessing.rotate Right SimpleTests.context 64 SimpleTests.queue
-                      |> GpuProcessing.rotate Right SimpleTests.context 64 SimpleTests.queue
+                      |> GpuProcessing.rotate SimpleTests.kernelRotateLeft SimpleTests.context SimpleTests.queue
+                      |> GpuProcessing.rotate SimpleTests.kernelRotateLeft SimpleTests.context SimpleTests.queue
 
                   Expect.equal
                       turnedLeft.Data
@@ -103,7 +112,12 @@ module PropertyTests =
                       let image = SimpleTests.imageBuilder length
 
                       let newImage =
-                          modificationGpuParser modification SimpleTests.context 64 SimpleTests.queue image
+                          modificationGpuParser
+                              modification
+                              SimpleTests.kernelsCortege
+                              SimpleTests.context
+                              SimpleTests.queue
+                              image
 
                       Expect.notEqual
                           image.Data

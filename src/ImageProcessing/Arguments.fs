@@ -5,6 +5,15 @@ open Kernels
 open Types
 open Brahma.FSharp
 
+let first (x, _, _, _, _, _) = x
+let second (_, x, _, _, _, _) = x
+let third (_, _, x, _, _, _) = x
+let fourth (_, _, _, x, _, _) = x
+let fifth (_, _, _, _, x, _) = x
+let sixth (_, _, _, _, _, x) = x
+
+
+
 let modificationParser modification =
     match modification with
     | Gauss5x5 -> CpuProcessing.applyFilter gaussianBlurKernel
@@ -18,18 +27,18 @@ let modificationParser modification =
     | MirrorHorizontal -> CpuProcessing.mirror Horizontal
     | FishEye -> CpuProcessing.fishEye
 
-let modificationGpuParser modification =
+let modificationGpuParser modification cortege =
     match modification with
-    | Gauss5x5 -> GpuProcessing.applyFilter gaussianBlurKernel
-    | Gauss7x7 -> GpuProcessing.applyFilter gaussianBlur7x7Kernel
-    | Edges -> GpuProcessing.applyFilter edgesKernel
-    | Sharpen -> GpuProcessing.applyFilter sharpenKernel
-    | Emboss -> GpuProcessing.applyFilter embossKernel
-    | ClockwiseRotation -> GpuProcessing.rotate Right
-    | CounterClockwiseRotation -> GpuProcessing.rotate Left
-    | MirrorVertical -> GpuProcessing.mirror Vertical
-    | MirrorHorizontal -> GpuProcessing.mirror Horizontal
-    | FishEye -> GpuProcessing.fishEye
+    | Gauss5x5 -> GpuProcessing.applyFilter gaussianBlurKernel (first cortege)
+    | Gauss7x7 -> GpuProcessing.applyFilter gaussianBlur7x7Kernel (first cortege)
+    | Edges -> GpuProcessing.applyFilter edgesKernel (first cortege)
+    | Sharpen -> GpuProcessing.applyFilter sharpenKernel (first cortege)
+    | Emboss -> GpuProcessing.applyFilter embossKernel (first cortege)
+    | ClockwiseRotation -> GpuProcessing.rotate (second cortege)
+    | CounterClockwiseRotation -> GpuProcessing.rotate (third cortege)
+    | MirrorVertical -> GpuProcessing.mirror (fourth cortege)
+    | MirrorHorizontal -> GpuProcessing.mirror (fifth cortege)
+    | FishEye -> GpuProcessing.fishEye (sixth cortege)
 
 let deviceParser device =
     match device with

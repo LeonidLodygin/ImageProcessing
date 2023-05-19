@@ -35,7 +35,7 @@ let arrayOfImagesProcessing inputDir outputDir conversion agentMod =
         for file in list do
             procAgent.Post(Img(loadAsImage file))
 
-        procAgent.PostAndReply Msg.EOS
+        procAgent.PostAndReply Msg.ProcessorEOS
     else
         let helper filePath =
             let filtered = conversion (loadAsImage filePath)

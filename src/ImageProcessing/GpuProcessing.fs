@@ -5,9 +5,8 @@ open MyImage
 open GpuKernels
 
 
-let applyFilter (filter: float32[][]) (clContext: ClContext) localWorkSize =
+let applyFilter (filter: float32[][]) (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
     let kernel = applyFilterKernel clContext localWorkSize
-    let queue = clContext.QueueProvider.CreateQueue()
 
     fun (img: MyImage) ->
 
@@ -38,9 +37,8 @@ let applyFilter (filter: float32[][]) (clContext: ClContext) localWorkSize =
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Width, img.Height, img.Name)
 
-let rotate side (clContext: ClContext) localWorkSize =
+let rotate side (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
     let kernel = rotateKernel clContext localWorkSize
-    let queue = clContext.QueueProvider.CreateQueue()
 
     fun (img: MyImage) ->
 
@@ -64,9 +62,8 @@ let rotate side (clContext: ClContext) localWorkSize =
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Height, img.Width, img.Name)
 
-let mirror side (clContext: ClContext) localWorkSize =
+let mirror side (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
     let kernel = mirrorKernel clContext localWorkSize
-    let queue = clContext.QueueProvider.CreateQueue()
 
     fun (img: MyImage) ->
 
@@ -90,9 +87,8 @@ let mirror side (clContext: ClContext) localWorkSize =
         queue.Post(Msg.CreateFreeMsg output)
         MyImage(result, img.Width, img.Height, img.Name)
 
-let fishEye (clContext: ClContext) localWorkSize =
+let fishEye (clContext: ClContext) localWorkSize (queue: MailboxProcessor<Msg>) =
     let kernel = fishEyeKernel clContext localWorkSize
-    let queue = clContext.QueueProvider.CreateQueue()
 
     fun (img: MyImage) ->
 

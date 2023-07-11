@@ -2,9 +2,11 @@ namespace ImageProcessing
 
 open Argu
 open Arguments
-open CpuImageProcessing
+open MyImage
+open Types
 open ImageArrayProcessing
 open Agents
+open Brahma.FSharp
 
 module Main =
 
@@ -15,26 +17,42 @@ module Main =
         let outputPath = parser.GetResult(OutputPath)
 
         if parser.Contains(Modifications) then
-            let listOfFunc = parser.GetResult(Modifications) |> List.map modificationParser
+            let listOfFunc = parser.GetResult(Modifications)
 
-            match listOfFunc with
-            | [] -> printfn $"List of modifications is empty"
-            | _ ->
-                let composition = List.reduce (>>) listOfFunc
+            let filters =
+                if parser.Contains(GpGpu) then
+                    let device = parser.GetResult(GpGpu) |> deviceParser
 
-                match System.IO.Path.GetExtension inputPath with
-                | "" ->
-                    if parser.Contains(Agents) then
-                        arrayOfImagesProcessing inputPath outputPath composition On
-                    elif parser.Contains(SuperAgents) then
-                        let countOfAgents = parser.GetResult(SuperAgents)
-                        superImageProcessing inputPath outputPath composition countOfAgents
+                    if ClDevice.GetAvailableDevices(device) |> Seq.isEmpty then
+                        printfn "GPU was not found, image processing will continue on the CPU"
+                        listOfFunc |> List.map modificationParser
                     else
-                        arrayOfImagesProcessing inputPath outputPath composition Off
-                | _ ->
-                    let image = loadAsImage inputPath
-                    let filtered = composition image
-                    saveImage filtered outputPath
+                        let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
+                        let queue = clContext.QueueProvider.CreateQueue()
+                        let filterKernel = GpuKernels.applyFilterKernel clContext
+                        let rotateKernel = GpuKernels.rotateKernel clContext
+                        let mirrorKernel = GpuKernels.mirrorKernel clContext
+                        let fishKernel = GpuKernels.fishEyeKernel clContext
+                        let kernelsCortege = (filterKernel, rotateKernel, mirrorKernel, fishKernel)
+                        List.map (fun n -> modificationGpuParser n kernelsCortege clContext 64 queue) listOfFunc
+                else
+                    listOfFunc |> List.map modificationParser
+
+            let composition = List.reduce (>>) filters
+
+            match System.IO.Path.GetExtension inputPath with
+            | "" ->
+                if parser.Contains(Agents) then
+                    arrayOfImagesProcessing inputPath outputPath composition On
+                elif parser.Contains(SuperAgents) then
+                    let countOfAgents = parser.GetResult(SuperAgents)
+                    superImageProcessing inputPath outputPath composition countOfAgents
+                else
+                    arrayOfImagesProcessing inputPath outputPath composition Off
+            | _ ->
+                let image = loadAsImage inputPath
+                let filtered = composition image
+                saveImage filtered outputPath
         else
             printfn $"No modifications for image processing"
 

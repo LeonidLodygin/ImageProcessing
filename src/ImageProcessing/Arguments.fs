@@ -1,26 +1,47 @@
 ﻿module Arguments
 
-open CpuImageProcessing
 open Argu
+open Kernels
+open Types
+open Brahma.FSharp
 
-type Modifications =
-    | Gauss5x5
-    | Gauss7x7
-    | Edges
-    | Sharpen
-    | Emboss
-    | ClockwiseRotation
-    | CounterClockwiseRotation
+let first (x, _, _, _) = x
+let second (_, x, _, _) = x
+let third (_, _, x, _) = x
+let fourth (_, _, _, x) = x
 
 let modificationParser modification =
     match modification with
-    | Gauss5x5 -> applyFilterToImage gaussianBlurKernel
-    | Gauss7x7 -> applyFilterToImage gaussianBlur7x7Kernel
-    | Edges -> applyFilterToImage edgesKernel
-    | Sharpen -> applyFilterToImage sharpenKernel
-    | Emboss -> applyFilterToImage embossKernel
-    | ClockwiseRotation -> rotate90DegreesImage Right
-    | CounterClockwiseRotation -> rotate90DegreesImage Left
+    | Gauss5x5 -> CpuProcessing.applyFilter gaussianBlurKernel
+    | Gauss7x7 -> CpuProcessing.applyFilter gaussianBlur7x7Kernel
+    | Edges -> CpuProcessing.applyFilter edgesKernel
+    | Sharpen -> CpuProcessing.applyFilter sharpenKernel
+    | Emboss -> CpuProcessing.applyFilter embossKernel
+    | ClockwiseRotation -> CpuProcessing.rotate Right
+    | CounterClockwiseRotation -> CpuProcessing.rotate Left
+    | MirrorVertical -> CpuProcessing.mirror Vertical
+    | MirrorHorizontal -> CpuProcessing.mirror Horizontal
+    | FishEye -> CpuProcessing.fishEye
+
+let modificationGpuParser modification cortege =
+    match modification with
+    | Gauss5x5 -> GpuProcessing.applyFilter gaussianBlurKernel (first cortege)
+    | Gauss7x7 -> GpuProcessing.applyFilter gaussianBlur7x7Kernel (first cortege)
+    | Edges -> GpuProcessing.applyFilter edgesKernel (first cortege)
+    | Sharpen -> GpuProcessing.applyFilter sharpenKernel (first cortege)
+    | Emboss -> GpuProcessing.applyFilter embossKernel (first cortege)
+    | ClockwiseRotation -> GpuProcessing.rotate Right (second cortege)
+    | CounterClockwiseRotation -> GpuProcessing.rotate Left (second cortege)
+    | MirrorVertical -> GpuProcessing.mirror Vertical (third cortege)
+    | MirrorHorizontal -> GpuProcessing.mirror Horizontal (third cortege)
+    | FishEye -> GpuProcessing.fishEye (fourth cortege)
+
+let deviceParser device =
+    match device with
+    | AnyGpu -> Platform.Any
+    | Nvidia -> Platform.Nvidia
+    | Amd -> Platform.Amd
+    | Intel -> Platform.Intel
 
 type CliArguments =
     | [<Mandatory; AltCommandLine("-i")>] InputPath of inputPath: string
@@ -28,6 +49,7 @@ type CliArguments =
     | [<AltCommandLine("-ag"); Last>] Agents
     | [<AltCommandLine("-sag"); Last>] SuperAgents of count: int
     | [<AltCommandLine("-mod")>] Modifications of modifications: List<Modifications>
+    | [<AltCommandLine("-gpu")>] GpGpu of device: Devices
 
     interface IArgParserTemplate with
         member s.Usage =
@@ -37,3 +59,4 @@ type CliArguments =
             | Modifications _ -> "Set of modifications to image or image array"
             | InputPath _ -> "Input directory or path to the image"
             | OutputPath _ -> "Output directory or path to saved image"
+            | GpGpu _ -> "Processing on Gpu"

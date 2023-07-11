@@ -1,7 +1,8 @@
 ﻿module ImageArrayProcessing
 
-open CpuImageProcessing
+open MyImage
 open Agents
+open Types
 
 let extensions =
     [| ".png"
@@ -27,13 +28,14 @@ let arrayOfImagesProcessing inputDir outputDir conversion agentMod =
     let list = listAllFiles inputDir
 
     if agentMod = On then
-        let agentSaver = imgSaver outputDir
-        let procAgent = imgProcessor conversion agentSaver
+        let logger = msgLogger ()
+        let agentSaver = imgSaver outputDir logger
+        let procAgent = imgProcessor conversion agentSaver logger
 
         for file in list do
             procAgent.Post(Img(loadAsImage file))
 
-        procAgent.PostAndReply Msg.EOS
+        procAgent.PostAndReply EOS
     else
         let helper filePath =
             let filtered = conversion (loadAsImage filePath)

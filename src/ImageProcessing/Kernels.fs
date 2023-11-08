@@ -1,4 +1,7 @@
-﻿module Kernels
+﻿/// <summary>
+/// Module with kernels for image processing
+/// </summary>
+module Kernels
 
 let gaussianBlurKernel =
     [| [| 1; 4; 6; 4; 1 |]

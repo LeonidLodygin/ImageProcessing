@@ -1,8 +1,17 @@
+/// <summary>
+/// Module with functions for image processing on the CPU
+/// </summary>
 module CpuProcessing
 
 open MyImage
 open Types
 
+/// <summary>
+/// Filter application
+/// </summary>
+/// <param name="filter">A two-dimensional array applied to an image as a filter</param>
+/// <param name="image">Image with type MyImage</param>
+/// <returns>Image with type MyImage</returns>
 let applyFilter (filter: float32[][]) (img: MyImage) =
     let filterD = (Array.length filter) / 2
     let filter = Array.concat filter
@@ -23,6 +32,12 @@ let applyFilter (filter: float32[][]) (img: MyImage) =
 
     MyImage(Array.mapi (fun p _ -> byte (processPixel p)) img.Data, img.Width, img.Height, img.Name)
 
+/// <summary>
+/// Rotate of image
+/// </summary>
+/// <param name="side">The side to which the image will be rotated</param>
+/// <param name="image">Image with type MyImage</param>
+/// <returns>Image with type MyImage</returns>
 let rotate (side: Side) (image: MyImage) =
     let res = Array.zeroCreate image.Data.Length
 
@@ -34,6 +49,12 @@ let rotate (side: Side) (image: MyImage) =
 
     MyImage(res, image.Height, image.Width, image.Name)
 
+/// <summary>
+/// Image Reflection
+/// </summary>
+/// <param name="side">The side to which the image will be reflected</param>
+/// <param name="image">Image with type MyImage</param>
+/// <returns>Image with type MyImage</returns>
 let mirror (side: MirrorDirection) (image: MyImage) =
     let res = Array.zeroCreate image.Data.Length
 
@@ -45,6 +66,11 @@ let mirror (side: MirrorDirection) (image: MyImage) =
 
     MyImage(res, image.Width, image.Height, image.Name)
 
+/// <summary>
+/// Applying "FishEye" to an image
+/// </summary>
+/// <param name="image">Image with type MyImage</param>
+/// <returns>Image with type MyImage</returns>
 let fishEye (image: MyImage) =
     let distortion = 0.5
 

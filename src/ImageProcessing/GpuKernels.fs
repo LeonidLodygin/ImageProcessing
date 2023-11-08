@@ -1,8 +1,14 @@
-﻿module GpuKernels
+﻿/// <summary>
+/// Module with kernels for image processing on the GPU
+/// </summary>
+module GpuKernels
 
 open Types
 open Brahma.FSharp
 
+/// <summary>
+/// Compilation of kernel to apply filter to the image
+/// </summary>
 let applyFilterKernel (clContext: ClContext) =
 
     let kernel =
@@ -30,6 +36,9 @@ let applyFilterKernel (clContext: ClContext) =
 
     clContext.Compile kernel
 
+/// <summary>
+/// Asynchronous application of the filter kernel to the image
+/// </summary>
 let applyFilterProcessor
     (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> ClArray<float32> -> int -> ClArray<byte> -> unit>)
     localWorkSize
@@ -42,6 +51,9 @@ let applyFilterProcessor
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
+/// <summary>
+/// Compilation of kernel to rotate the image
+/// </summary>
 let rotateKernel (clContext: ClContext) =
 
     let kernel =
@@ -59,6 +71,9 @@ let rotateKernel (clContext: ClContext) =
 
     clContext.Compile kernel
 
+/// <summary>
+/// Asynchronous application of the rotation kernel to the image
+/// </summary>
 let rotateKernelProcessor
     (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> int -> ClArray<byte> -> unit>)
     localWorkSize
@@ -73,6 +88,9 @@ let rotateKernelProcessor
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
+/// <summary>
+/// Compilation of kernel to reflect the image
+/// </summary>
 let mirrorKernel (clContext: ClContext) =
 
     let kernel =
@@ -90,6 +108,9 @@ let mirrorKernel (clContext: ClContext) =
 
     clContext.Compile kernel
 
+/// <summary>
+/// Asynchronous application of the reflection kernel to the image
+/// </summary>
 let mirrorKernelProcessor
     (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> int -> ClArray<byte> -> unit>)
     localWorkSize
@@ -104,6 +125,9 @@ let mirrorKernelProcessor
         commandQueue.Post(Msg.CreateRunMsg<_, _> kernel)
         result
 
+/// <summary>
+/// Compilation of kernel to apply FishEye to the image
+/// </summary>
 let fishEyeKernel (clContext: ClContext) =
 
     let kernel =
@@ -135,6 +159,9 @@ let fishEyeKernel (clContext: ClContext) =
 
     clContext.Compile kernel
 
+/// <summary>
+/// Asynchronous application of the fisheye kernel to the image
+/// </summary>
 let fishEyeKernelProcessor
     (kernel: ClProgram<Range1D, ClArray<byte> -> int -> int -> ClArray<byte> -> unit>)
     localWorkSize

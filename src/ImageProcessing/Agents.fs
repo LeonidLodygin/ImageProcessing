@@ -1,14 +1,28 @@
-﻿module Agents
+﻿/// <summary>
+/// Module with implementation of agents for image processing
+/// </summary>
+module Agents
 
 open Types
 open MyImage
 
+/// <summary>
+/// List of all files in directory
+/// </summary>
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles dir
     List.ofArray files
 
+/// <summary>
+/// Creation of path to save the image
+/// </summary>
 let outFile (imgName: string) (outDir: string) = System.IO.Path.Combine(outDir, imgName)
 
+/// <summary>
+/// Agent for saving images
+/// </summary>
+/// <param name="outDir">Path to save</param>
+/// <param name="logger">Logging Agent</param>
 let imgSaver outDir (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
@@ -26,6 +40,12 @@ let imgSaver outDir (logger: MailboxProcessor<_>) =
                 | _ -> failwith "imgSaver received the wrong message"
         })
 
+/// <summary>
+/// Agent for image processing
+/// </summary>
+/// <param name="filter">Filter for application</param>
+/// <param name="imgSaver">Saving Agent</param>
+/// <param name="logger">Logging Agent</param>
 let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
@@ -46,6 +66,9 @@ let imgProcessor filter (imgSaver: MailboxProcessor<_>) (logger: MailboxProcesso
                 | _ -> failwith "imgProcessor received the wrong message"
         })
 
+/// <summary>
+/// Agent for logging
+/// </summary>
 let msgLogger () =
     MailboxProcessor.Start(fun inbox ->
         async {
@@ -60,6 +83,12 @@ let msgLogger () =
                 | _ -> failwith "msgLogger received the wrong message"
         })
 
+/// <summary>
+/// Agent with the ability to process and save the image
+/// </summary>
+/// <param name="outputDir">Path to save</param>
+/// <param name="conversion">Image transformation</param>
+/// <param name="logger">Logging Agent</param>
 let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
 
     MailboxProcessor.Start(fun inbox ->
@@ -80,6 +109,13 @@ let superAgent outputDir conversion (logger: MailboxProcessor<_>) =
                 | _ -> failwith "superAgent received the wrong message"
         })
 
+/// <summary>
+/// Image processing using superAgents
+/// </summary>
+/// <param name="inputDir">Path to image or images</param>
+/// <param name="outputDir">Path to save</param>
+/// <param name="conversion">Image transformation</param>
+/// <param name="countOfAgents">Count of superAgents to processing</param>
 let superImageProcessing inputDir outputDir conversion countOfAgents =
     let filesToProcess = listAllFiles inputDir
     let logger = msgLogger ()

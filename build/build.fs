@@ -34,6 +34,10 @@ let environVarAsBoolOrDefault varName defaultValue =
 let productName = "ImageProcessing"
 let sln = __SOURCE_DIRECTORY__ </> ".." </> "ImageProcessing.sln"
 
+let rootDirectory =
+    __SOURCE_DIRECTORY__
+    </> ".."
+
 let src = __SOURCE_DIRECTORY__ </> ".." </> "src"
 
 let srcCodeGlob =
@@ -49,6 +53,13 @@ let testsCodeGlob =
 let srcGlob = src @@ "**/*.??proj"
 let testsGlob = __SOURCE_DIRECTORY__ </> ".." </> "tests/**/*.??proj"
 
+let docsDir =
+    __SOURCE_DIRECTORY__ </> ".."
+    </> "docs"
+let docsSrcDir =
+    __SOURCE_DIRECTORY__ </> ".."
+    </> "docsSrc"
+
 let mainApp = src @@ productName
 
 let srcAndTest =
@@ -63,18 +74,34 @@ let distGlob =
 
 let coverageThresholdPercent = 0
 let coverageReportDir =  __SOURCE_DIRECTORY__ </> ".." </> "docs" @@ "coverage"
+let temp =
+    rootDirectory
+    </> "temp"
+let watchDocsDir =
+    temp
+    </> "watch-docs"
 
-let gitOwner = "gsvgit"
+let gitOwner = "LeonidLodygin"
 let gitRepoName = "ImageProcessing"
 
 let gitHubRepoUrl = sprintf "https://github.com/%s/%s" gitOwner gitRepoName
 
+let documentationRootUrl = "https://LeonidLodygin.github.io/ImageProcessing"
+
 let releaseBranch = "main"
+let readme = "README.md"
+let changelogFile = "CHANGELOG.md"
 
 let tagFromVersionNumber versionNumber = sprintf "v%s" versionNumber
 
 let changelogFilename = __SOURCE_DIRECTORY__ </> ".." </> "CHANGELOG.md"
 let changelog = Fake.Core.Changelog.load changelogFilename
+
+let READMElink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/{readme}")
+let CHANGELOGlink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/{changelogFile}")
+
+let LICENSElink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/LICENSE.md")
+
 let mutable latestEntry =
     if Seq.isEmpty changelog.Entries
     then Changelog.ChangelogEntry.New("0.0.1", "0.0.1-alpha.1", Some DateTime.Today, None, [], false)
@@ -217,6 +244,64 @@ module dotnet =
         DotNet.exec id "fantomas" args
 
     let fsharpLint args = DotNet.exec id "fsharplint lint --file-type solution" args
+
+module DocsTool =
+    let quoted s = $"\"%s{s}\""
+
+    let fsDocsDotnetOptions (o: DotNet.Options) = {
+        o with
+            WorkingDirectory = __SOURCE_DIRECTORY__ </> ".."
+    }
+
+    let fsDocsBuildParams configuration (p: Fsdocs.BuildCommandParams) = {
+        p with
+            Clean = Some true
+            Input = Some(quoted docsSrcDir)
+            Output = Some(quoted docsDir)
+            Eval = Some true
+            //Projects = Some(Seq.map quoted (!!srcGlob))
+            Properties = Some($"Configuration=%s{configuration}")
+            Parameters =
+                Some [
+                    // https://fsprojects.github.io/FSharp.Formatting/content.html#Templates-and-Substitutions
+                    "root", quoted documentationRootUrl
+                    "fsdocs-collection-name", quoted productName
+                    "fsdocs-repository-branch", quoted releaseBranch
+                    "fsdocs-repository-link", quoted (gitHubRepoUrl)
+                    "fsdocs-package-version", quoted latestEntry.NuGetVersion
+                    "fsdocs-readme-link", quoted (READMElink.ToString())
+                    "fsdocs-release-notes-link", quoted (CHANGELOGlink.ToString())
+                    "fsdocs-license-link", quoted (LICENSElink.ToString())
+                ]
+            IgnoreProjects = Some true
+            NoApiDocs = Some true
+            Strict = Some true
+    }
+
+    let cleanDocsCache () = Fsdocs.cleanCache rootDirectory
+
+    let build (configuration) =
+        Fsdocs.build fsDocsDotnetOptions (fsDocsBuildParams configuration)
+
+
+    let watch (configuration) =
+        let buildParams bp =
+            let bp =
+                Option.defaultValue Fsdocs.BuildCommandParams.Default bp
+                |> fsDocsBuildParams configuration
+
+            {
+                bp with
+                    Output = Some watchDocsDir
+                    Strict = None
+            }
+
+        Fsdocs.watch
+            fsDocsDotnetOptions
+            (fun p -> {
+                p with
+                    BuildCommandParams = Some(buildParams p.BuildCommandParams)
+            })
 
 module FSharpAnalyzers =
     type Arguments =
@@ -586,6 +671,16 @@ let fsharpLint _ =
     else
         failwith "Some files need formatting, please check output for more info"
 
+let cleanDocsCache _ = DocsTool.cleanDocsCache ()
+
+let buildDocs ctx =
+    let configuration = configuration (ctx.Context.AllExecutingTargets)
+    DocsTool.build (string configuration)
+
+let watchDocs ctx =
+    let configuration = configuration (ctx.Context.AllExecutingTargets)
+    DocsTool.watch (string configuration)
+
 let initTargets () =
     BuildServer.install [
         GitHubActions.Installer
@@ -622,6 +717,9 @@ let initTargets () =
     Target.create "CheckFormatCode" checkFormatCode
     Target.create "Release" ignore
     //Target.create "FsharpLint" fsharpLint
+    Target.create "CleanDocsCache" cleanDocsCache
+    Target.create "BuildDocs" buildDocs
+    Target.create "WatchDocs" watchDocs
 
     //-----------------------------------------------------------------------------
     // Target Dependencies
@@ -643,6 +741,18 @@ let initTargets () =
     "DotnetRestore" ?=>! "UpdateChangelog"
     "UpdateChangelog" ?=>! "AssemblyInfo"
     "UpdateChangelog" ==>! "GitRelease"
+
+    "CleanDocsCache"
+    ==>! "BuildDocs"
+
+    "DotnetBuild"
+    ?=>! "BuildDocs"
+
+    "DotnetBuild"
+    ==>! "BuildDocs"
+
+    "DotnetBuild"
+    ==>! "WatchDocs"
 
     "DotnetRestore"
         ==> "CheckFormatCode"

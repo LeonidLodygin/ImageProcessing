@@ -1,45 +1,33 @@
-# ImageProcessing
+# LeonidLodygin.ImageProcessing
 
 Simple image processing on GPGPU in F# using [Brahma.FSharp](https://github.com/YaccConstructor/Brahma.FSharp).
 
----
+## Features
+* Apply built-in or custom filters to an image
+* Rotating, reflecting the image
+* Applying fish-eye to an image
+* Image processing using CPU or specific GPU
+* Ability to process images in multiple threads using agents (mailbox processor based).
+* Process one image or a whole set of images at a time
 
-## Builds
+## Installation
+* TODO
 
-
-GitHub Actions |
-:---: |
-[![GitHub Actions](https://github.com/gsvgit/ImageProcessing/workflows/Build%20master/badge.svg)](https://github.com/gsvgit/ImageProcessing/actions?query=branch%3Amaster) |
-[![Build History](https://buildstats.info/github/chart/gsvgit/ImageProcessing)](https://github.com/gsvgit/ImageProcessing/actions?query=branch%3Amaster) |
-
-## NuGet
-
-Package | Stable | Prerelease
---- | --- | ---
-ImageProcessing |  | 
-
-
----
-
-### Developing
-
-Make sure the following **requirements** are installed on your system:
-
-- [dotnet SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) 7.0 or higher
-- OpenCL-compatible device with respective driver installed.
-
----
-
-### Building
-
-
+## Quick start
 ```sh
-> build.cmd <optional buildtarget> // on windows
-$ ./build.sh  <optional buildtarget>// on unix
+> dotnet run -i *input path* -o *output path* -mod FishEye -gpu AnyGpu
 ```
+## Result
+| Original                                                                                       | Fisheye                                                                                        |
+|:-----------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|
+| ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/images/example.jpg)   | ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/images/processed.jpg) |
 
----
+## Contributors
 
-### Build Targets
+- Leonid Lodygin (Github: [@LeonidLodygin](https://github.com/LeonidLodygin))
+- Semyon Grigorev (Github: [@gsvgit](https://github.com/gsvgit))
 
-For details look at [MiniScaffold](https://github.com/TheAngryByrd/MiniScaffold), we use it in our project.
+## License
+
+This project licensed under MIT License. License text can be found in the
+[license file](https://github.com/LeonidLodygin/ImageProcessing/blob/main/LICENSE.md).

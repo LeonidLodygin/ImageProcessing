@@ -1,10 +1,10 @@
 ﻿namespace GpuTests
 
 open Expecto
-open Arguments
-open Kernels
-open MyImage
-open Types
+open ImageProcessing.Arguments
+open ImageProcessing.Kernels
+open ImageProcessing.MyImage
+open ImageProcessing.Types
 open System
 open Brahma.FSharp
 
@@ -12,10 +12,10 @@ module SimpleTests =
     let src = __SOURCE_DIRECTORY__
     let context = ClContext(ClDevice.GetFirstAppropriateDevice())
     let queue = context.QueueProvider.CreateQueue()
-    let filterKernel = GpuKernels.applyFilterKernel context
-    let rotateKernel = GpuKernels.rotateKernel context
-    let mirrorKernel = GpuKernels.mirrorKernel context
-    let fishKernel = GpuKernels.fishEyeKernel context
+    let filterKernel = ImageProcessing.GpuKernels.applyFilterKernel context
+    let rotateKernel = ImageProcessing.GpuKernels.rotateKernel context
+    let mirrorKernel = ImageProcessing.GpuKernels.mirrorKernel context
+    let fishKernel = ImageProcessing.GpuKernels.fishEyeKernel context
     let kernelsCortege = (filterKernel, rotateKernel, mirrorKernel, fishKernel)
 
     let flat2dArray arr =
@@ -41,7 +41,13 @@ module SimpleTests =
                   let image = loadAsImage (src + "/input/test.png")
 
                   let filtered =
-                      GpuProcessing.applyFilter gaussianBlur7x7Kernel filterKernel context 64 queue image
+                      ImageProcessing.GpuProcessing.applyFilter
+                          gaussianBlur7x7Kernel
+                          filterKernel
+                          context
+                          64
+                          queue
+                          image
 
                   Expect.notEqual
                       image.Data
@@ -51,7 +57,9 @@ module SimpleTests =
               <| fun _ ->
                   let image = MyImage([| 1uy; 2uy; 3uy; 1uy; 2uy; 3uy; 1uy; 2uy; 3uy |], 3, 3, "test")
 
-                  let turnedImage = image |> GpuProcessing.rotate Right rotateKernel context 64 queue
+                  let turnedImage =
+                      image
+                      |> ImageProcessing.GpuProcessing.rotate Right rotateKernel context 64 queue
 
                   let expected = [| 1uy; 1uy; 1uy; 2uy; 2uy; 2uy; 3uy; 3uy; 3uy |]
 
@@ -62,10 +70,10 @@ module SimpleTests =
 
                   let turnedImage =
                       image
-                      |> GpuProcessing.rotate Right rotateKernel context 64 queue
-                      |> GpuProcessing.rotate Right rotateKernel context 64 queue
-                      |> GpuProcessing.rotate Right rotateKernel context 64 queue
-                      |> GpuProcessing.rotate Right rotateKernel context 64 queue
+                      |> ImageProcessing.GpuProcessing.rotate Right rotateKernel context 64 queue
+                      |> ImageProcessing.GpuProcessing.rotate Right rotateKernel context 64 queue
+                      |> ImageProcessing.GpuProcessing.rotate Right rotateKernel context 64 queue
+                      |> ImageProcessing.GpuProcessing.rotate Right rotateKernel context 64 queue
 
                   Expect.equal
                       image.Data
@@ -84,13 +92,33 @@ module PropertyTests =
 
                   let turnedLeft =
                       image
-                      |> GpuProcessing.rotate Left SimpleTests.rotateKernel SimpleTests.context 64 SimpleTests.queue
-                      |> GpuProcessing.rotate Left SimpleTests.rotateKernel SimpleTests.context 64 SimpleTests.queue
+                      |> ImageProcessing.GpuProcessing.rotate
+                          Left
+                          SimpleTests.rotateKernel
+                          SimpleTests.context
+                          64
+                          SimpleTests.queue
+                      |> ImageProcessing.GpuProcessing.rotate
+                          Left
+                          SimpleTests.rotateKernel
+                          SimpleTests.context
+                          64
+                          SimpleTests.queue
 
                   let turnedRight =
                       image
-                      |> GpuProcessing.rotate Right SimpleTests.rotateKernel SimpleTests.context 64 SimpleTests.queue
-                      |> GpuProcessing.rotate Right SimpleTests.rotateKernel SimpleTests.context 64 SimpleTests.queue
+                      |> ImageProcessing.GpuProcessing.rotate
+                          Right
+                          SimpleTests.rotateKernel
+                          SimpleTests.context
+                          64
+                          SimpleTests.queue
+                      |> ImageProcessing.GpuProcessing.rotate
+                          Right
+                          SimpleTests.rotateKernel
+                          SimpleTests.context
+                          64
+                          SimpleTests.queue
 
                   Expect.equal
                       turnedLeft.Data

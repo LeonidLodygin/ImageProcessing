@@ -1,8 +1,8 @@
 ﻿namespace GpuCpuComparison
 
 open Expecto
-open Arguments
-open Types
+open ImageProcessing.Arguments
+open ImageProcessing.Types
 
 module PropertyTests =
     [<Tests>]

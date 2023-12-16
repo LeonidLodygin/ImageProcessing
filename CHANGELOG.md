@@ -15,4 +15,4 @@ First release
 - Parallel image processing using agents
 - Processing using the CPU or any GPU on your device
 
-[0.1.0]: https://github.com/user/MyCoolNewApp.git/releases/tag/v0.1.0
+[0.1.0]: https://github.com/LeonidLodygin/ImageProcessing/releases/tag/v1.0.0

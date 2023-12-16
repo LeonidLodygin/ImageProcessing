@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with necessary algebraic types
 /// </summary>
-module Types
+module ImageProcessing.Types
 
 open MyImage
 

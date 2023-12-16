@@ -54,10 +54,10 @@ let srcGlob = src @@ "**/*.??proj"
 let testsGlob = __SOURCE_DIRECTORY__ </> ".." </> "tests/**/*.??proj"
 
 let docsDir =
-    __SOURCE_DIRECTORY__ </> ".."
+    rootDirectory
     </> "docs"
 let docsSrcDir =
-    __SOURCE_DIRECTORY__ </> ".."
+    rootDirectory
     </> "docsSrc"
 
 let mainApp = src @@ productName
@@ -259,7 +259,7 @@ module DocsTool =
             Input = Some(quoted docsSrcDir)
             Output = Some(quoted docsDir)
             Eval = Some true
-            //Projects = Some(Seq.map quoted (!!srcGlob))
+            Projects = Some(Seq.map quoted (!!srcGlob))
             Properties = Some($"Configuration=%s{configuration}")
             Parameters =
                 Some [
@@ -273,8 +273,6 @@ module DocsTool =
                     "fsdocs-release-notes-link", quoted (CHANGELOGlink.ToString())
                     "fsdocs-license-link", quoted (LICENSElink.ToString())
                 ]
-            IgnoreProjects = Some true
-            NoApiDocs = Some true
             Strict = Some true
     }
 

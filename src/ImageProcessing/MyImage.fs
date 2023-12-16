@@ -1,4 +1,4 @@
-﻿module MyImage
+﻿module ImageProcessing.MyImage
 
 open System
 open SixLabors.ImageSharp

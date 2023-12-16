@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with implementation of processing array of images
 /// </summary>
-module ImageArrayProcessing
+module ImageProcessing.ImageArrayProcessing
 
 open MyImage
 open Agents

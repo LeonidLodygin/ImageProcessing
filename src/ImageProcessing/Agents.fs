@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with implementation of agents for image processing
 /// </summary>
-module Agents
+module ImageProcessing.Agents
 
 open Types
 open MyImage

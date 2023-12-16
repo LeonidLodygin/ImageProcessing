@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with functions for image processing on the GPU
 /// </summary>
-module GpuProcessing
+module ImageProcessing.GpuProcessing
 
 open Brahma.FSharp
 open MyImage

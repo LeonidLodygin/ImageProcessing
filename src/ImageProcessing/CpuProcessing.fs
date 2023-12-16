@@ -1,7 +1,7 @@
 /// <summary>
 /// Module with functions for image processing on the CPU
 /// </summary>
-module CpuProcessing
+module ImageProcessing.CpuProcessing
 
 open MyImage
 open Types

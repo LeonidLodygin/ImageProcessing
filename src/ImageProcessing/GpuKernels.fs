@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with kernels for image processing on the GPU
 /// </summary>
-module GpuKernels
+module ImageProcessing.GpuKernels
 
 open Types
 open Brahma.FSharp

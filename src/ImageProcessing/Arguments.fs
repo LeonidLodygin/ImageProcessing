@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Module with implementation of work via console commands
 /// </summary>
-module Arguments
+module ImageProcessing.Arguments
 
 open Argu
 open Kernels

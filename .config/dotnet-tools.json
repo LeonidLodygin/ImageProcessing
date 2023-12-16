@@ -37,6 +37,12 @@
       "commands": [
         "dotnet-fsharplint"
       ]
+    },
+    "fsdocs-tool": {
+      "version": "19.1.1",
+      "commands": [
+        "fsdocs"
+      ]
     }
   }
 }

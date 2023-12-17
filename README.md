@@ -18,9 +18,9 @@ Simple image processing on GPGPU in F# using [Brahma.FSharp](https://github.com/
 > dotnet run -i *input path* -o *output path* -mod FishEye -gpu AnyGpu
 ```
 ## Result
-| Original                                                                                       | Fisheye                                                                                        |
-|:-----------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|
-| ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/images/example.jpg)   | ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/images/processed.jpg) |
+| Original                                                                                              | Fisheye                                                                                                 |
+|:------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------|
+| ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/gh-pages/images/example.jpg) | ![image](https://raw.githubusercontent.com/LeonidLodygin/ImageProcessing/gh-pages/images/processed.jpg) |
 
 ## Contributors
 

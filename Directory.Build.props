@@ -3,7 +3,7 @@
         <!-- summary is not migrated from project.json, but you can use the <Description> property for that if needed. -->
         <PackageTags>f#, fsharp</PackageTags>
         <PackageProjectUrl>https://github.com/LeonidLodygin/ImageProcessing</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/LeonidLodygin/ImageProcessing/blob/main/LICENSE.md</PackageLicenseUrl>
+        <PackageLicense>https://github.com/LeonidLodygin/ImageProcessing/blob/main/LICENSE.md</PackageLicense>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <RepositoryType>git</RepositoryType>
         <Authors>LeonidLodygin</Authors>

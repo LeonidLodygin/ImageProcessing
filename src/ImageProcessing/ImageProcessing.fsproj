@@ -4,7 +4,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <AssemblyName>LeonidLodygin.ImageProcessing</AssemblyName>
+    <PackageId>LeonidLodygin.ImageProcessing</PackageId>
   </PropertyGroup>
   <PropertyGroup>
     <Title>LeonidLodygin.ImageProcessing</Title>

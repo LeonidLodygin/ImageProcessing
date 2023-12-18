@@ -11,7 +11,9 @@ Simple image processing on GPGPU in F# using [Brahma.FSharp](https://github.com/
 * Process one image or a whole set of images at a time
 
 ## Installation
-* TODO
+```sh
+> dotnet add package LeonidLodygin.ImageProcessing --version 1.0.0
+```
 
 ## Quick start
 ```sh

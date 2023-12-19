@@ -1,4 +1,7 @@
-﻿module ImageProcessing.MyImage
+﻿/// <summary>
+/// Module for working with images
+/// </summary>
+module ImageProcessing.MyImage
 
 open System
 open SixLabors.ImageSharp

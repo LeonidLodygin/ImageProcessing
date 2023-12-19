@@ -1,7 +1,3 @@
-# LeonidLodygin.ImageProcessing
-
----
-
 ## What is ImageProcessing?
 
 A library for image processing using GPGPU and agents for parallel computing. 
@@ -13,10 +9,10 @@ A library for image processing using GPGPU and agents for parallel computing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Tutorials</h5>
-        <p class="card-text">Takes you by the hand through a series of steps to create your first library. </p>
+        <p class="card-text">How to get started with ImageProcessing </p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{root}}Tutorials/0-toc.html" class="btn btn-primary">Get started</a>
+        <a href="{{root}}Tutorials/Tutorial.html" class="btn btn-primary">Get started</a>
       </div>
     </div>
   </div>
@@ -24,10 +20,10 @@ A library for image processing using GPGPU and agents for parallel computing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">How-To Guides</h5>
-        <p class="card-text">Guides you through the steps involved in addressing key problems and use-cases. </p>
+        <p class="card-text">Learn how to work with the ImageProcessing library directly in your code </p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{root}}/How_Tos/0-toc.html" class="btn btn-primary">Learn Usecases</a>
+        <a href="{{root}}/How_Tos/Code.html" class="btn btn-primary">How to code</a>
       </div>
     </div>
   </div>
@@ -35,21 +31,10 @@ A library for image processing using GPGPU and agents for parallel computing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Explanations</h5>
-        <p class="card-text">Discusses key topics and concepts at a fairly high level and provide useful background information and explanation..</p>
+        <p class="card-text">Learn about the structure of the library</p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{root}}Explanations/0-toc.html" class="btn btn-primary">Dive Deeper</a>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card h-100">
-      <div class="card-body">
-        <h5 class="card-title">Reference</h5>
-        <p class="card-text">Contain technical references.</p>
-      </div>
-      <div class="card-footer text-right   border-top-0">
-        <a href="{{root}}/Reference/0-toc.html" class="btn btn-primary">Read References</a>
+        <a href="{{root}}Explanations/Structure.html" class="btn btn-primary">Structure</a>
       </div>
     </div>
   </div>

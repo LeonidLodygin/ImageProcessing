@@ -86,7 +86,7 @@ let gitRepoName = "ImageProcessing"
 
 let gitHubRepoUrl = sprintf "https://github.com/%s/%s" gitOwner gitRepoName
 
-let documentationRootUrl = "https://LeonidLodygin.github.io/ImageProcessing"
+let documentationRootUrl = "https://LeonidLodygin.github.io/ImageProcessing/"
 
 let releaseBranch = "main"
 let readme = "README.md"
@@ -273,7 +273,7 @@ module DocsTool =
                     "fsdocs-release-notes-link", quoted (CHANGELOGlink.ToString())
                     "fsdocs-license-link", quoted (LICENSElink.ToString())
                 ]
-            Strict = Some false
+            Strict = Some true
     }
 
     let cleanDocsCache () = Fsdocs.cleanCache rootDirectory

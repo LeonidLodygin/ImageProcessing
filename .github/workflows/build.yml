@@ -35,13 +35,3 @@ jobs:
       run: ./build.cmd DotnetBuild
       env:
         CI: true
-  self-hosted_build:
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v2
-    - name: Self-hosted_build
-      run: |
-        chmod +x ./build.sh
-        ./build.sh
-      env:
-        CI: true

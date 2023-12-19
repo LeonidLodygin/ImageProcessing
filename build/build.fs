@@ -97,10 +97,10 @@ let tagFromVersionNumber versionNumber = sprintf "v%s" versionNumber
 let changelogFilename = __SOURCE_DIRECTORY__ </> ".." </> "CHANGELOG.md"
 let changelog = Fake.Core.Changelog.load changelogFilename
 
-let READMElink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/{readme}")
-let CHANGELOGlink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/{changelogFile}")
+let READMElink = Uri(Uri(gitHubRepoUrl), $"{productName}/blob/{releaseBranch}/{readme}")
+let CHANGELOGlink = Uri(Uri(gitHubRepoUrl), $"{productName}/blob/{releaseBranch}/{changelogFile}")
 
-let LICENSElink = Uri(Uri(gitHubRepoUrl), $"blob/{releaseBranch}/LICENSE.md")
+let LICENSElink = Uri(Uri(gitHubRepoUrl), $"{productName}/blob/{releaseBranch}/LICENSE.md")
 
 let mutable latestEntry =
     if Seq.isEmpty changelog.Entries

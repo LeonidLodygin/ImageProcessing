@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <meta charset="utf-8">
+    <title>Agents (ImageProcessing)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="LeonidLodygin">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost:8901/img/favicon.ico">
+    <link id="fsdocs-theme" type="text/css" rel="stylesheet" href="http://localhost:8901/content/fsdocs-dark.css" />
+    <link type="text/css" rel="stylesheet" href="http://localhost:8901/content/fsdocs-main.css" />
+    <link type="text/css" rel="stylesheet" href="http://localhost:8901/content/fsdocs-custom.css" />
+
+    <script type="text/javascript" src="http://localhost:8901/content/theme-toggle.js">
+        <!-- Placed in head to prevent flicker -->
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="http://localhost:8901/content/navbar-fixed-left.css" />
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+<script type="text/javascript">
+    var wsUri = "ws://localhost:8901/websocket";
+    function init()
+    {
+        websocket = new WebSocket(wsUri);
+        websocket.onmessage = function(evt) {
+            const data = evt.data;
+            if (data.endsWith(".css")) {
+                console.log(`Trying to reload ${data}`);
+                const link = document.querySelector(`link[href*='${data}']`);
+                if (link) {
+                    const href = new URL(link.href);
+                    const ticks = new Date().getTime();
+                    href.searchParams.set("v", ticks);
+                    link.href = href.toString();
+                }
+            }
+            else {
+                console.log('closing');
+                websocket.close();
+                document.location.reload();
+            }
+        }
+    }
+    window.addEventListener("load", init, false);
+</script>
+
+</head>
+
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg bg-body">
+        <div class="container">
+            <div id="header">
+                <div class="searchbox">
+                    <input data-search-input="" class="m-3" id="search-by" type="search" placeholder="Search..." />
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
+                    id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown"
+                    data-bs-display="static">
+
+                    <i id="theme-icon-active" class="fa-solid fa-circle-half-stroke"></i>
+                    <span class="d-none d-sm-none d-md-block ms-2">Toggle theme</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme"
+                    style="--bs-dropdown-min-width: 8rem;">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center"
+                            data-bs-theme-value="light">
+                            <i class="me-2  fa-solid fa-sun"></i>
+                            Light
+                            <i class="bi ms-auto d-none fa-solid fa-check"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active"
+                            data-bs-theme-value="dark">
+                            <i class="me-2  fa-regular fa-moon"></i>
+                            Dark
+                            <i class="bi ms-auto d-none fa-solid fa-check"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center"
+                            data-bs-theme-value="auto">
+                            <i class="me-2 fa-solid fa-circle-half-stroke"></i>
+                            Auto
+                            <i class="bi ms-auto d-none fa-solid fa-check"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <ul class="navbar-nav flex-wrap">
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="project-references" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Project References
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="other-links">
+                            <li><a class="dropdown-item" href="https://github.com/LeonidLodygin/ImageProcessing/blob/main/README.md"><i
+                                        class="fa-brands fa-readme  pe-2"></i>README</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/LeonidLodygin/ImageProcessing/blob/main/LICENSE.md"><i
+                                        class="fa-regular  fa-id-card pe-2"></i>LICENSE</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/LeonidLodygin/ImageProcessing/blob/main/CHANGELOG.md"><i
+                                        class="fa-regular  fa-sticky-note pe-2"></i>CHANGELOG/Release
+                                    Notes</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/LeonidLodygin/ImageProcessing"><i
+                                        class="fa-brands fa-github pe-2"></i>Source Repository</a></li>
+                        </ul>
+                    </li>
+	            <li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="other-links" role="button" data-bs-toggle="dropdown"
+    aria-expanded="false">
+    API Reference
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="other-links">
+    <li><a class="dropdown-item" href="http://localhost:8901/reference/index.html">All Namespaces</a></li>
+  </ul>
+</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="masthead">
+            <h3 class="muted"><a href="http://localhost:8901/">ImageProcessing <small
+                        class="muted">0.1.0</small></a></h3>
+        </div>
+        <div class="float-right" id="edit-this-page"><span><a class="nav-link"
+                    href="https://github.com/LeonidLodygin/ImageProcessing/edit/main/docsSrc/{{fsdocs-source-filename}}"><i
+                        class="fa-regular fa-pen-to-square pe-2"></i>Edit this page</a></span></div>
+        <hr />
+    </div>
+    <div class="container" id="fsdocs-content">
+        <div>
+  <h2>
+    Agents Module
+  </h2>
+  <dl class="fsdocs-metadata">
+    <dt>
+      Namespace: 
+      <a href="http://localhost:8901/reference/imageprocessing.html">
+        ImageProcessing
+      </a>
+    </dt>
+    <dt>
+      Assembly: LeonidLodygin.ImageProcessing.dll
+    </dt>
+  </dl>
+  <div class="fsdocs-xmldoc">
+    <div>
+      <p class="fsdocs-summary">
+        
+ Module with implementation of agents for image processing
+ 
+      </p>
+    </div>
+  </div>
+  <div>
+    <h3>
+      Functions and values
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Function or value
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
+                <p>
+                  <a id="imgProcessor">
+                    <a href="#imgProcessor">
+                      <code><span>imgProcessor&#32;<span>filter&#32;imgSaver&#32;logger</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="1">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>imgProcessor&#32;<span>filter&#32;imgSaver&#32;logger</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        filter
+                      </b>
+                      :
+                      <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                       - 
+                      Filter for application
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        imgSaver
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                       - 
+                      Saving Agent
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        logger
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                       - 
+                      Logging Agent
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.imgProcessor`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.imgProcessor\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L49-49" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Agent for image processing
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    filter
+                  </span>
+                  :
+                  <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Filter for application
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    imgSaver
+                  </span>
+                  :
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Saving Agent
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    logger
+                  </span>
+                  :
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Logging Agent
+                  </p>
+                </dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+                <p>
+                  <a id="imgSaver">
+                    <a href="#imgSaver">
+                      <code><span>imgSaver&#32;<span>outDir&#32;logger</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="2">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>imgSaver&#32;<span>outDir&#32;logger</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        outDir
+                      </b>
+                      :
+                      <code>string</code>
+                       - 
+                      Path to save
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        logger
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                       - 
+                      Logging Agent
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.imgSaver`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.imgSaver\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L26-26" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Agent for saving images
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    outDir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Path to save
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    logger
+                  </span>
+                  :
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Logging Agent
+                  </p>
+                </dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+                <p>
+                  <a id="listAllFiles">
+                    <a href="#listAllFiles">
+                      <code><span>listAllFiles&#32;<span>dir</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="3">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>listAllFiles&#32;<span>dir</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        dir
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;list</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.listAllFiles`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.listAllFiles\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L12-12" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ List of all files in directory
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    dir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span>string&#32;list</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+                <p>
+                  <a id="msgLogger">
+                    <a href="#msgLogger">
+                      <code><span>msgLogger&#32;<span>()</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="4">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>msgLogger&#32;<span>()</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        ()
+                      </b>
+                      :
+                      <code>unit</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.msgLogger`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.msgLogger\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L72-72" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Agent for logging
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    ()
+                  </span>
+                  :
+                  <code>unit</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
+                <p>
+                  <a id="outFile">
+                    <a href="#outFile">
+                      <code><span>outFile&#32;<span>imgName&#32;outDir</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="5">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>outFile&#32;<span>imgName&#32;outDir</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        imgName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        outDir
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.outFile`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.outFile\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L19-19" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Creation of path to save the image
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    imgName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    outDir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+                <p>
+                  <a id="superAgent">
+                    <a href="#superAgent">
+                      <code><span>superAgent&#32;<span>outputDir&#32;conversion&#32;logger</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="6">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>superAgent&#32;<span>outputDir&#32;conversion&#32;logger</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        outputDir
+                      </b>
+                      :
+                      <code>string</code>
+                       - 
+                      Path to save
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        conversion
+                      </b>
+                      :
+                      <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                       - 
+                      Image transformation
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        logger
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                       - 
+                      Logging Agent
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.superAgent`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.superAgent\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L92-92" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Agent with the ability to process and save the image
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    outputDir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Path to save
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    conversion
+                  </span>
+                  :
+                  <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Image transformation
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    logger
+                  </span>
+                  :
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Logging Agent
+                  </p>
+                </dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-control-fsharpmailboxprocessor-1">MailboxProcessor</a>&lt;<a href="http://localhost:8901/reference/imageprocessing-types-msg.html">Msg</a>&gt;</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+                <p>
+                  <a id="superImageProcessing">
+                    <a href="#superImageProcessing">
+                      <code><span>superImageProcessing&#32;<span>inputDir&#32;outputDir&#32;conversion&#32;countOfAgents</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="7">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>superImageProcessing&#32;<span>inputDir&#32;outputDir&#32;conversion&#32;countOfAgents</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        inputDir
+                      </b>
+                      :
+                      <code>string</code>
+                       - 
+                      Path to image or images
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        outputDir
+                      </b>
+                      :
+                      <code>string</code>
+                       - 
+                      Path to save
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        conversion
+                      </b>
+                      :
+                      <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                       - 
+                      Image transformation
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        countOfAgents
+                      </b>
+                      :
+                      <code>int</code>
+                       - 
+                      Count of superAgents to processing
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:ImageProcessing.Agents.superImageProcessing`')">
+                    <img src="http://localhost:8901/content/img/copy-md.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:ImageProcessing.Agents.superImageProcessing\'/>')">
+                    <img src="http://localhost:8901/content/img/copy-xml.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/LeonidLodygin/ImageProcessing/tree/master/src/ImageProcessing/Agents.fs#L119-119" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="http://localhost:8901/content/img/github.png" class="normal"/>
+                    <img src="http://localhost:8901/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Image processing using superAgents
+ 
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    inputDir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Path to image or images
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    outputDir
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Path to save
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    conversion
+                  </span>
+                  :
+                  <code><span><a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a>&#32;->&#32;<a href="http://localhost:8901/reference/imageprocessing-myimage-myimage.html">MyImage</a></span></code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Image transformation
+                  </p>
+                </dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    countOfAgents
+                  </span>
+                  :
+                  <code>int</code>
+                </dt>
+                <dd class="fsdocs-param-docs">
+                  <p>
+                    Count of superAgents to processing
+                  </p>
+                </dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+        
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+        integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'http://localhost:8901/';</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <script type="text/javascript" src="http://localhost:8901/content/fsdocs-search.js"></script>
+    <script type="text/javascript" src="http://localhost:8901/content/fsdocs-tips.js"></script>
+
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    </div>
+</body>
+
+</html>

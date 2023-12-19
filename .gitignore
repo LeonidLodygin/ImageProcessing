@@ -270,6 +270,6 @@ coverage.*.xml
 # FSharp.Formatting
 .fsdocs/
 output/
-tmp/
+temp/
 
 out/

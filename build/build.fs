@@ -273,7 +273,7 @@ module DocsTool =
                     "fsdocs-release-notes-link", quoted (CHANGELOGlink.ToString())
                     "fsdocs-license-link", quoted (LICENSElink.ToString())
                 ]
-            Strict = Some true
+            Strict = Some false
     }
 
     let cleanDocsCache () = Fsdocs.cleanCache rootDirectory

@@ -160,30 +160,30 @@
     </p>
 </div>
 <p>Load your image using the <code>loadAsImage</code> function from the <code>MyImage</code> module.</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let image = loadAsImage "path to the image"
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let image = loadAsImage "path to the image"
 </code></pre></td></tr></table>
 <p>For CPU and GPU the list of transforms is identical, decide what you want to process your image on and select the appropriate function to process from the <code>CpuProcessing</code> module or the <code>GpuProcessing</code> module respectively.</p>
 <h3><a name="In-the-case-of-CPU-processing" class="anchor" href="#In-the-case-of-CPU-processing">In the case of CPU processing:</a></h3>
 <p>Apply the fisheye filter to the uploaded image.</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let newImage = fishEye image
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let newImage = fishEye image
 </code></pre></td></tr></table>
 <p>Don't forget to save the processed image using the saveImage function from the <code>MyImage</code> module!</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let newImage = saveImage "path"
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let newImage = saveImage "path"
 </code></pre></td></tr></table>
 <h3><a name="In-the-case-of-GPU-processing" class="anchor" href="#In-the-case-of-GPU-processing">In the case of GPU processing:</a></h3>
 <p>In the case of GPU processing, you have to go through a few extra steps to achieve your goal:</p>
 <p>Prepare OpenCl context and queue(from <code>Brahma.FSharp</code> module):</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
-&gt; let queue = clContext.QueueProvider.CreateQueue()
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let clContext = ClContext(ClDevice.GetFirstAppropriateDevice(device))
+let queue = clContext.QueueProvider.CreateQueue()
 </code></pre></td></tr></table>
 <p>Compile the kernel to apply the filter using the <code>fishEyeKernel</code> function from the <code>GpuKernels</code> module:</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let fishKernel = fishEyeKernel clContext
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let fishKernel = fishEyeKernel clContext
 </code></pre></td></tr></table>
 <p>Process the image using the <code>fishEye</code> function from the <code>GpuProcessing</code> module:</p>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let newImage = fishEye fishKernel clContext 64 queue image
 </code></pre></td></tr></table>
 <p>Don't forget to save the new image:</p>
-<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">&gt; let newImage = saveImage "path"
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="sh">let newImage = saveImage "path"
 </code></pre></td></tr></table>
 <div class="alert alert-primary" role="alert">
     <p>

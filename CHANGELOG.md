@@ -12,7 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parallel image processing using agents
 - Processing using the CPU or any GPU on your device
 
-## [0.1.0] - 2023-12-16
-First release
-
 [0.1.0]: https://github.com/LeonidLodygin/ImageProcessing/releases/tag/v1.0.0

@@ -2,13 +2,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyName>LeonidLodygin.ImageProcessing</AssemblyName>
+    <PackageId>LeonidLodygin.ImageProcessing</PackageId>
   </PropertyGroup>
   <PropertyGroup>
-    <Title>ImageProcessing</Title>
-    <Description>ImageProcessing does the thing!</Description>
+    <Title>LeonidLodygin.ImageProcessing</Title>
+    <Description>Image processing using GPGPU</Description>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Optimize>true</Optimize>

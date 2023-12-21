@@ -1,4 +1,7 @@
-﻿module Arguments
+﻿/// <summary>
+/// Module with implementation of work via console commands
+/// </summary>
+module ImageProcessing.Arguments
 
 open Argu
 open Kernels
@@ -10,6 +13,9 @@ let second (_, x, _, _) = x
 let third (_, _, x, _) = x
 let fourth (_, _, _, x) = x
 
+/// <summary>
+/// Parsing of CPU modification
+/// </summary>
 let modificationParser modification =
     match modification with
     | Gauss5x5 -> CpuProcessing.applyFilter gaussianBlurKernel
@@ -23,6 +29,9 @@ let modificationParser modification =
     | MirrorHorizontal -> CpuProcessing.mirror Horizontal
     | FishEye -> CpuProcessing.fishEye
 
+/// <summary>
+/// Parsing of GPU modification
+/// </summary>
 let modificationGpuParser modification cortege =
     match modification with
     | Gauss5x5 -> GpuProcessing.applyFilter gaussianBlurKernel (first cortege)
@@ -36,6 +45,9 @@ let modificationGpuParser modification cortege =
     | MirrorHorizontal -> GpuProcessing.mirror Horizontal (third cortege)
     | FishEye -> GpuProcessing.fishEye (fourth cortege)
 
+/// <summary>
+/// Parsing of device
+/// </summary>
 let deviceParser device =
     match device with
     | AnyGpu -> Platform.Any

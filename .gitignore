@@ -267,4 +267,9 @@ coverage.*.xml
 .paket/.store
 .paket/paket
 
+# FSharp.Formatting
+.fsdocs/
+output/
+temp/
+
 out/

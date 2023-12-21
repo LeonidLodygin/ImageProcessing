@@ -8,6 +8,9 @@ open ImageArrayProcessing
 open Agents
 open Brahma.FSharp
 
+/// <summary>
+/// Module for processing console commands
+/// </summary>
 module Main =
 
     [<EntryPoint>]
